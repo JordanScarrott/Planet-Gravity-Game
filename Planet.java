@@ -44,4 +44,16 @@ public class Planet extends JPanel {
     public void setRadius(float radius) {
         this.radius = radius;
     }
+
+    public BufferedImage getImgPlanet() {
+        return imgPlanet;
+    }
+
+    public void setImgPlanet(BufferedImage imgPlanet) {
+        this.imgPlanet = imgPlanet;
+    }
+
+    public MyVector getCenter() {
+        return center;
+    }
 }
