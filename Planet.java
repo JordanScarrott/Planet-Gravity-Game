@@ -17,7 +17,9 @@ public class Planet extends JPanel {
 
         // The center of the image
         center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
-
+    }
+    public Planet(float x, float y, float radius, BufferedImage imgPlanet) {
+        this(new MyVector(x, y), radius, imgPlanet);
     }
 
 
