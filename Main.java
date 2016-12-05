@@ -14,7 +14,8 @@ public class Main {
         runnit();
     }
     public static void runnit() throws InterruptedException {
-        final Game game = new Game(frame);
+        final ResourceLoader resLoader = new ResourceLoader();
+        final Game game = new Game(frame, resLoader);
         //Loop
         Timer animationTimer = new Timer(20, new ActionListener() { //Games Refresh Rate
             public void actionPerformed(ActionEvent event) {
