@@ -7,14 +7,12 @@ import java.io.InputStream;
 public abstract class ResourceLoader {
 
     protected static BufferedImage loadImage(String file) {
-
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream filePath = loader.getResourceAsStream("res/images/" + file);
         BufferedImage img = null;
         try {
             img = ImageIO.read(filePath);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return img;
@@ -28,8 +26,7 @@ public abstract class ResourceLoader {
             AudioInputStream inputStream = AudioSystem.getAudioInputStream(loader.getResourceAsStream("res/sound/" + file));
             clip.open(inputStream);
             clip.start();
-        }
-        catch (IOException | UnsupportedAudioFileException | LineUnavailableException exx) {
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException exx) {
             exx.printStackTrace();
         }
     }
