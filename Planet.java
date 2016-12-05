@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Planet extends JPanel {
@@ -47,5 +48,9 @@ public class Planet extends JPanel {
 
     public MyVector getCenter() {
         return center;
+    }
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.drawImage(imgPlanet, (int)pLocation.x, (int)pLocation.y, null);
     }
 }
