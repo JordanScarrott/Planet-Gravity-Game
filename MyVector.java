@@ -1,5 +1,3 @@
-package core;
-
 import com.sun.javafx.geom.Vec2f;
 
 /**
