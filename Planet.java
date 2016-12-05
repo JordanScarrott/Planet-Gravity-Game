@@ -1,8 +1,5 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class Planet extends JPanel {
 
@@ -12,15 +9,10 @@ public class Planet extends JPanel {
     private float radius;
 
     // Constructor
-    public Planet(MyVector location, float radius) {
+    public Planet(MyVector location, float radius, BufferedImage imgPlanet) {
         this.pLocation = location;
         this.radius = radius;
-
-        // Draws the default planet image
-        try {
-            imgPlanet = ImageIO.read(new File("src/Images/back.jpg"));
-        } catch (IOException e) {
-        }
+        this.imgPlanet = imgPlanet;
 
         // The center of the image
         center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
