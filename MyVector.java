@@ -311,20 +311,13 @@ public class MyVector extends Vec2f {
 
     /**
      * Returns a random MyVector
-     * @return a random MyVector of with components ranging from -1 to 1
+     * @return a random MyVector of with components ranging from 0 to 1
      * */
     public static MyVector randomMyVector() {
         Random rand = new Random();
 
         // Choose random floats between 0 and 1
-        float x = rand.nextFloat();
-        float y = rand.nextFloat();
-
-        // Give the numbers a random sign
-        x = rand.nextBoolean() ? x : -x;
-        y = rand.nextBoolean() ? y : -y;
-
-        return new MyVector(x, y);
+        return new MyVector(rand.nextFloat(), rand.nextFloat());
     }
 
     /**
