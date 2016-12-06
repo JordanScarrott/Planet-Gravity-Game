@@ -1,4 +1,5 @@
 import com.sun.javafx.geom.Vec2f;
+import java.util.Random;
 
 /**
  * A 2-dimensional, single-precision, floating-point vector with operator methods
@@ -310,8 +311,6 @@ public class MyVector extends Vec2f {
 
     /**
      * Returns a random MyVector
-     * @param lowerBound the lowest x or y value that can be returned
-     * @param upperBound the highest x or y value that can be returned
      * @return a random MyVector of with components ranging from -1 to 1
      * */
     public static MyVector randomMyVector() {
