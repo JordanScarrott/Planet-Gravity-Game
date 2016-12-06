@@ -1,4 +1,5 @@
 import com.sun.javafx.geom.Vec2f;
+import java.util.Random;
 
 /**
  * A 2-dimensional, single-precision, floating-point vector with operator methods
