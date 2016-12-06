@@ -15,18 +15,47 @@ public class Main {
     }
 
     public static void runnit() throws InterruptedException {
-        final Game game = new Game(frame);
+         Menu menu = new Menu(frame);
+         Game game = new Game(frame);
         //Loop
-        Timer animationTimer = new Timer(20, new ActionListener() { //Games Refresh Rate
-            public void actionPerformed(ActionEvent event) {
-                game.repaint(); //Repaints everything in the game
-                game.move();    //Moves everything in the game
+        while(true) {
+            menu = new Menu(frame);
+            Menu(frame, menu);
+            game = new Game(frame);
+            Game(frame, game);
+        }
+    }
+    public static void Menu(JFrame frame, Menu menu){
+        frame.add(menu);
+        menu.setVisible(true);
+        frame.revalidate();
+        while(!menu.getFinished()){
+            menu.repaint();
+            menu.move();
+            try {
+                Thread.sleep(20);
+            }catch(Exception e){
+
             }
-        });
+        }
+        menu.setFinished(false);
+        frame.remove(menu);
+    }
+    public static void Game(JFrame frame, Game game){
         frame.add(game);
         game.setVisible(true);
         frame.revalidate();
         frame.repaint();
-        animationTimer.start();
+        while(!game.getFinished()){
+            game.repaint();
+            game.move();
+            try {
+                Thread.sleep(20);
+            }catch(Exception e){
+
+            }
+        }
+        game.setFinished(false);
+        frame.remove(game);
     }
 }

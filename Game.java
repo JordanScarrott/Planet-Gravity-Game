@@ -11,8 +11,10 @@ public class Game extends JPanel {
     private int[] planetID = new int[2]; //Indicates on which planet the respective player is on
     private int[][] keys = new int[2][2]; //Keyboard inputs for player 1
     private int playerbounds = 20; //Used for player collision
+    private boolean finished;
     private BufferedImage[] playerImages = new BufferedImage[4];
     public Game(JFrame frame) {
+        finished = false;
         generatePlanets();
         addPlayers(frame);
         for (int i=1; i<=4; i++) { //Load Hamster Animation
@@ -44,6 +46,12 @@ public class Game extends JPanel {
             }
         }
         collision(); //Check player Collisions
+    }
+    public boolean getFinished(){
+        return finished;
+    }
+    public void setFinished(boolean finished){
+        this.finished = finished;
     }
     public void collision() {
         if (planetID[0] == planetID[1]) {
@@ -84,5 +92,6 @@ public class Game extends JPanel {
     }
     public void Winner(int playerID){
         System.out.println("Winner is " + playerID); //Do winning stuff here
+        finished = true;
     }
 }
