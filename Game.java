@@ -1,43 +1,41 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
-public class Game extends JPanel implements KeyListener {
+public class Game extends JPanel {
 
-    ResourceLoader resLoader;
-    BufferedImage img;
+    ArrayList<Planet> planets = new ArrayList<Planet>();
+    private Player player;
+    private int planetID;
 
     public Game(JFrame frame) {
-        frame.addKeyListener(this);
-        img = resLoader.loadImage("circle.png");
+        planetID = 0;
+        planets.add(new Planet(300, 200, 100, ResourceLoader.loadImage("orangeplanet.png")));
+        planets.add(new Planet(0, 0, 100, ResourceLoader.loadImage("orangeplanet.png")));
+        planets.add(new Planet(500, 0, 100, ResourceLoader.loadImage("orangeplanet.png")));
+        player = new Player(300, 200, 100, ResourceLoader.loadImage("hamster.png"));
+        player.addKeyListener(frame);
     }
 
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(img, 75, 45, null);
+        for(Planet i : planets){
+            i.paint(g);
+        }
+        player.paint(g);
     }
 
     public void move() {
+        player.move();
+        if(player.getJumping()){
+            for(int i= 0; i < planets.size(); i++) {
+                if(i != planetID)
+                    if(player.checkCollision(planets.get(i).getpLocation().x, planets.get(i).getpLocation().y)){
+                        planetID = i;
+                        break;
+                    }
 
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            Main.gameState = 0;
+            }
         }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
     }
 }
