@@ -1,5 +1,4 @@
 import com.sun.javafx.geom.Vec2f;
-import java.util.Random;
 
 /**
  * A 2-dimensional, single-precision, floating-point vector with operator methods
@@ -311,27 +310,19 @@ public class MyVector extends Vec2f {
 
     /**
      * Returns a random MyVector
-     * @return a random MyVector of with components ranging from 0 to 1
+     * @param lowerBound the lowest x or y value that can be returned
+     * @param upperBound the highest x or y value that can be returned
+     * @return a random MyVector of Real numbers
      * */
-    public static MyVector randomMyVector() {
+    /*public static MyVector randomMyVector(int lowerBound, int upperBound) {
         Random rand = new Random();
+        float x = rand.nextInt(upperBound - lowerBound);
+        x = x > 0 ? x + lowerBound : -x + lowerBound;
+        float y = rand.nextInt(upperBound - lowerBound);
+        y = y > 0 ? y + lowerBound : -y + lowerBound;
 
-        // Choose random floats between 0 and 1
-        return new MyVector(rand.nextFloat(), rand.nextFloat());
-    }
-
-    /**
-    * Multiplies the x and y components of the MyVector represented by
-    * this instance by the specified x and y variables
-    * @param x the nuymber by which to nultiply the x component of MyVector
-    *   represented by this instance
-    * @param y the nuymber by which to nultiply the y component of MyVector
-    *   represented by this instance
-    */
-    public void respectiveMult(float x, float y) {
-        this.x *= x;
-        this.y *= y;
-    }
+        return new MyVector(x, y);
+    }*/
 
     /**
      * Computes the angle (in degrees) between this core.MyVector and
