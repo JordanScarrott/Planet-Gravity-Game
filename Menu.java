@@ -54,10 +54,10 @@ public class Menu extends JPanel implements KeyListener {
 
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             if (cursY == 160) {
-                Main.gameState = 1;
+//                 Main.gameState = 1;
             }
             else if (cursY == 360) {
-                Main.gameState = -1;
+//                 Main.gameState = -1;
             }
         }
     }
