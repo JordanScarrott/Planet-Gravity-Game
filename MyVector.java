@@ -321,6 +321,19 @@ public class MyVector extends Vec2f {
     }
 
     /**
+    * Multiplies the x and y components of the MyVector represented by
+    * this instance by the specified x and y variables
+    * @param x the nuymber by which to nultiply the x component of MyVector
+    *   represented by this instance
+    * @param y the nuymber by which to nultiply the y component of MyVector
+    *   represented by this instance
+    */
+    public void respectiveMult(float x, float y) {
+        this.x *= x;
+        this.y *= y;
+    }
+
+    /**
      * Computes the angle (in degrees) between this core.MyVector and
      * the specified core.MyVector.
      *
