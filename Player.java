@@ -37,26 +37,29 @@ public class Player extends JPanel implements KeyListener {
         AffineTransform transform = new AffineTransform();
         transform.translate(pLocation.x - height, pLocation.y - height);
         transform.rotate(Math.toRadians(angle), radius + height , radius + height) ;
+        transform.rotate(Math.toRadians(-45), 21,21) ;
         g2d.drawImage(imgPlayer, transform, this);
+
     }
     public void move() {
         if (moving) angle += 4;
         if(jumping){
             height+=4;
-            checkCollision();
-        }
-    }
-    public void checkCollision(){
-        if(MyVector.distanceSq(new MyVector((float)(400 + (100 + 42 + height)*Math.cos(Math.toRadians(angle - 135))),(float) (300 + (100 + 42 + height)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(100, 100))<121*121){
-            land();
 
         }
     }
-    public void land(){
+    public boolean checkCollision(float planetX, float planetY){
+        if(MyVector.distanceSq(new MyVector((float)(pLocation.x + 100 + (100 + 42 + height)*Math.cos(Math.toRadians(angle - 135))),(float) (pLocation.y + 100 + (100 + 42 + height)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(planetX + 100, planetY + 100))<121*121){
+            land(planetX, planetY);
+            return true;
+        }
+        return false;
+    }
+    public void land(float planetX, float planetY){
         angle = (int) (Math.atan2((int) (300 + (100 + 42 + height)*Math.sin(Math.toRadians(angle - 135)))-100, (int) (400 + (100 + 42 + height)*Math.cos(Math.toRadians(angle - 135)))-100)*180/3.14596) + 135;
         jumping = false;
-        pLocation.x = 0;
-        pLocation.y = 0;
+        pLocation.x = planetX;
+        pLocation.y = planetY;
         height = 0;
         moving = true;
 
