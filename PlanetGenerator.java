@@ -10,12 +10,14 @@ public class PlanetGenerator {
     public static final int MIN_RADIUS = 50;
     public static final int MAX_RADIUS = 250;
 
+    public static final int PLAYER_SIZE = 45;
+
     private ArrayList<Planet> planets;
 
     private Random rand;
     private int numOfPlanets;
 
-    private int x, y;
+    private int width, height;
 
     // Constructor
     /**
@@ -23,8 +25,8 @@ public class PlanetGenerator {
     * @param frameY the height of the current JFrame
     */
     public PlanetGenerator(int frameX, int frameY) {
-        this.x = frameX;
-        this.x = frameY;
+        this.width = frameX;
+        this.height = frameY;
         planets = new ArrayList<>();
         rand = new Random();
         numOfPlanets = 5;
@@ -36,10 +38,36 @@ public class PlanetGenerator {
     **/
     public void generatePlanets() {
         int tempRadius;
+        MyVector tempLocation;
         for(int i = 0; i < numOfPlanets; i++) {
-//             tempRadius = rand.nextInt(MIN_RADIUS, MAX_RADIUS);
-//             planets.add(new Planet(MyVector.randomMyVector(), tempRadius, ResourceLoader.randomImage()));
+            // Choose a random location and radius for the new planet
+            tempRadius = rand.nextInt(MAX_RADIUS) + MIN_RADIUS;
+
+            /*do {
+                tempLocation = MyVector.randomMyVector();
+                tempLocation.respectiveMult(width, height);
+            } while (!boundaryChecks(tempLocation, tempRadius) && planetChecks());
+
+            planets.add(new Planet(tempLocation, tempRadius, ResourceLoader.getRandomPlanet()));*/
+            // planets.add(new Planet(MyVector.randomMyVector(), tempRadius, ResourceLoader.randomImage()));
         }
     }
 
+    /**
+    * Returns true if Specified does not collide with the frame borders
+    */
+    private boolean boundaryChecks(MyVector location, int radius) {
+        if ((location.x - radius - PLAYER_SIZE < 0) || (location.x + radius + PLAYER_SIZE > width)) {
+            return false;
+        }
+        if ((location.y - radius - PLAYER_SIZE < 0) || (location.y + radius + PLAYER_SIZE > height)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean planetChecks() {
+        return true;
+    }
 }
