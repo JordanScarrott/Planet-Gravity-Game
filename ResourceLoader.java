@@ -36,7 +36,7 @@ public abstract class ResourceLoader {
         Random rand = new Random();
         int randomFileNumber = rand.nextInt(folderToSearch.listFiles().length);
         System.out.println(randomFileNumber);
-        
+
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         InputStream filePath = loader.getResourceAsStream(folderToSearch.listFiles()[randomFileNumber].getPath());
         BufferedImage img = null;
@@ -47,6 +47,10 @@ public abstract class ResourceLoader {
             e.printStackTrace();
         }
         return img;
+    }
+
+    protected static BufferedImage getRandomPlanet() {
+        return getRandomPlanet("res/images/planets");
     }
 
     protected static void loadAudio(String file) {
