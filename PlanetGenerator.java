@@ -37,8 +37,8 @@ public class PlanetGenerator {
     public void generatePlanets() {
         int tempRadius;
         for(int i = 0; i < numOfPlanets; i++) {
-            tempRadius = rand.nextInt(MIN_RADIUS, MAX_RADIUS);
-            planets.add(new Planet(MyVector.randomMyVector(), tempRadius, ResourceLoader.randomImage()));
+//             tempRadius = rand.nextInt(MIN_RADIUS, MAX_RADIUS);
+//             planets.add(new Planet(MyVector.randomMyVector(), tempRadius, ResourceLoader.randomImage()));
         }
     }
 
