@@ -6,24 +6,28 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Player extends JPanel implements KeyListener {
-    private BufferedImage imgPlayer = null;
+    private BufferedImage[] imgPlayer = null;
+    private int currentSprite;
+    private long lastTime = 0;
+    private double delay = 0.5;
     private MyVector pLocation;
     private MyVector center;
     private float height;
     private int velocity;
     private int acceleration;
+    private boolean clockwise;
     private int radius;
     private int angle = 135;
     private boolean moving = false;
     private boolean jumping = false;
 
-    public Player(MyVector location, int radius, BufferedImage imgPlayer) {
+    public Player(MyVector location, int radius, BufferedImage[] imgPlayer) {
         this.pLocation = location;
         this.imgPlayer = imgPlayer;
         this.radius = radius;
     }
 
-    public Player(float x, float y, int radius, BufferedImage imgPlayer) {
+    public Player(float x, float y, int radius, BufferedImage[] imgPlayer) {
         this(new MyVector(x, y), radius, imgPlayer);
     }
     //Getters and Setters
@@ -32,20 +36,34 @@ public class Player extends JPanel implements KeyListener {
     }
     //Functions
     public void paint(Graphics g) {
+        long newTime = System.currentTimeMillis();
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
         transform.translate(pLocation.x - height, pLocation.y - height);
         transform.rotate(Math.toRadians(angle), radius + height , radius + height) ;
-        transform.rotate(Math.toRadians(-45), 21,21) ;
-        g2d.drawImage(imgPlayer, transform, this);
-
+        transform.rotate(Math.toRadians(-45), 21, 21);
+        if (newTime-lastTime>=delay) {
+            lastTime = newTime;
+            if (currentSprite < 3) {
+                currentSprite++;
+            }
+            else {
+                currentSprite = 0;
+            }
+        }
+        g2d.drawImage(imgPlayer[currentSprite], transform, this);
     }
     public void move() {
-        if (moving) angle += 4;
-        if(jumping){
+        if (moving)
+            if (clockwise) {
+                angle += 4;
+            }
+        else {
+                angle -=4;
+            }
+        if(jumping) {
             height+=4;
-
         }
     }
     public boolean checkCollision(float planetX, float planetY){
@@ -78,8 +96,15 @@ public class Player extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if(!jumping) {
-            if (keyCode == KeyEvent.VK_A) {
+
+            if (keyCode == KeyEvent.VK_RIGHT) {
                 moving = true;
+                clockwise = true;
+            }
+
+            if (keyCode == KeyEvent.VK_LEFT) {
+                moving = true;
+                clockwise = false;
             }
         }
         if (keyCode == KeyEvent.VK_J) {
