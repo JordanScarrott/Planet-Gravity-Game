@@ -1,8 +1,10 @@
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 
 public abstract class ResourceLoader {
 
@@ -46,7 +48,7 @@ public abstract class ResourceLoader {
     }
 
     protected static BufferedImage getRandomPlanet() {
-        return getRandomPlanet("res/images/planets");
+        return getRandomImage("res/images/planets");
     }
     
     protected static void loadAudio(String file) {
