@@ -7,30 +7,17 @@ import java.util.ArrayList;
 public class Game extends JPanel {
 
     ArrayList<Planet> planets = new ArrayList<Planet>();
-    private Player player;
-    private Player player2;
-    private int planetID;
-    private int planetID2;
-    private int[] keys1 = new int[2]; //Keyboard inputs for player 1
-    private int[] keys2 = new int[2];
+    ArrayList<Player> players = new ArrayList<Player>();
+    private int[] planetID = new int[2]; //Indicates on which planet the respective player is on
+    private int[][] keys = new int[2][2]; //Keyboard inputs for player 1
+    private int playerbounds = 20; //Used for player collision
     private BufferedImage[] playerImages = new BufferedImage[4];
     public Game(JFrame frame) {
-        keys1[0] = KeyEvent.VK_A;
-        keys2[0] = KeyEvent.VK_O;
-        keys1[1] = KeyEvent.VK_S;
-        keys2[1] = KeyEvent.VK_P;
-        planetID = 0;
-        planetID2 = 1;
         generatePlanets();
-
-        for (int i=1; i<=4; i++) {
+        addPlayers(frame);
+        for (int i=1; i<=4; i++) { //Load Hamster Animation
             playerImages[i-1] = ResourceLoader.loadImage("Hamster" + i + ".png");
         }
-        player = new Player(250, 0, 100, playerImages, keys1, ResourceLoader.loadImage("test.png"));
-        player2 = new Player(0, 0, 100, playerImages, keys2, ResourceLoader.loadImage("test.png"));
-
-        player.addKeyListener(frame);
-        player2.addKeyListener(frame);
     }
 
     public void paint(Graphics g) {
@@ -38,52 +25,64 @@ public class Game extends JPanel {
         for(Planet i : planets){
             i.paint(g);
         }
-        player.paint(g);
-        player2.paint(g);
+        for(Player i : players){
+            i.paint(g);
+        }
     }
 
     public void move() {
-        player.move(planetID);
-        player2.move(planetID2);
-        collision();
-        if(player.getJumping()){
-            for(int i= 0; i < planets.size(); i++) {
-                if(i != planetID)
-                    if(player.checkCollision(planets.get(i).getpLocation().x, planets.get(i).getpLocation().y)){
-                        planetID = i;
-                        break;
-                    }
-
+        for(int i = 0; i < players.size(); i++){
+            players.get(i).move(planetID[i]);
+            if(players.get(i).getJumping()){
+                for(int j= 0; j < planets.size(); j++) {
+                    if(j != planetID[0])
+                        if(players.get(i).checkCollision(planets.get(j).getpLocation().x, planets.get(j).getpLocation().y, planets.get(j).getRadius())){
+                            planetID[i] = j;
+                            break;
+                        }
+                }
             }
         }
-        if(player2.getJumping()){
-            for(int i= 0; i < planets.size(); i++) {
-                if(i != planetID2)
-                    if(player2.checkCollision(planets.get(i).getpLocation().x, planets.get(i).getpLocation().y)){
-                        planetID2 = i;
-                        break;
-                    }
-
-            }
-        }
+        collision(); //Check player Collisions
     }
     public void collision() {
-        if (planetID == planetID2) {
-            if (player.getAngle() > player2.getAngle() - 20 && player.getAngle() < player2.getAngle() + 20)  {
-                if(player.getAcceleration() > player2.getAcceleration()) {
-                    System.out.println("player1 WINS");
-                }else System.out.println("player2 WINS");
+        if (planetID[0] == planetID[1]) {
+            if (players.get(0).getAngle() > players.get(1).getAngle() - playerbounds && players.get(0).getAngle() < players.get(1).getAngle() + playerbounds)  {
+                if(players.get(0).getAcceleration() > players.get(1).getAcceleration()) {
+                    Winner(1);
+                }else Winner(2);
             }
         }
     }
+    public void addPlayers(JFrame frame){
+        planetID[0] = 0;
+        planetID[1] = 1;
+        players.add(new Player(planets.get(planetID[0]).getpLocation().x, planets.get(planetID[0]).getpLocation().y, (int)planets.get(planetID[0]).getRadius(), playerImages, keys[0]));
+        players.add(new Player(planets.get(planetID[1]).getpLocation().x, planets.get(planetID[1]).getpLocation().y, (int)planets.get(planetID[1]).getRadius(), playerImages, keys[1]));
+        setPlayerKeys();
+        for(int i = 0; i < players.size(); i++){
+            players.get(i).addKeyListener(frame); //Enables use of Keyboard inputs for players
+        }
+    }
+    public void setPlayerKeys(){
+        //Player1
+        keys[0][0] = KeyEvent.VK_A; //Move
+        keys[0][1] = KeyEvent.VK_S; //Jump
+        //Player 2
+        keys[1][0] = KeyEvent.VK_O; //Move
+        keys[1][1] = KeyEvent.VK_P; //Jump
+    }
     public void generatePlanets(){
-        planets.add(new Planet(0, 0, 100, ResourceLoader.loadImage("background.png")));
+        planets.add(new Planet(0, 0, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
         planets.add(new Planet(250, 0, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
         planets.add(new Planet(550, 0, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(250, 250, 100, ResourceLoader.loadImage("planets/redplanet.png")));
+        planets.add(new Planet(250, 250, 50, ResourceLoader.loadImage("planets/redplanet.png")));
         planets.add(new Planet(500, 500, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
         planets.add(new Planet(0, 500, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
         planets.add(new Planet(0,250, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
         planets.add(new Planet(500, 250, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
+    }
+    public void Winner(int playerID){
+        System.out.println("Winner is " + playerID); //Do winning stuff here
     }
 }

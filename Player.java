@@ -7,34 +7,32 @@ import java.awt.image.BufferedImage;
 
 public class Player extends JPanel implements KeyListener {
     private BufferedImage[] imgPlayer = null;
-    private BufferedImage test = null;
     private MyVector pLocation;
     private MyVector center;
     private int currentSprite;
     private long lastTime = 0;
     private double delay = 100;
     private float height;
-    private int velocity;
     private int acceleration;
     private int radius;
-    private int angle = 135;
+    private int angle;
     private boolean moving = false;
     private boolean jumping = false;
     private int[] keys;
     private int accelerationtimer;
 
-    public Player(MyVector location, int radius, BufferedImage[] imgPlayer, int[] keys, BufferedImage test) {
+    public Player(MyVector location, int radius, BufferedImage[] imgPlayer, int[] keys) {
         this.pLocation = location;
         this.imgPlayer = imgPlayer;
         this.radius = radius;
         this.keys = keys;
-        this.test = test;
+        angle = randomAngle();
         acceleration = 0;
         accelerationtimer = 0;
     }
 
-    public Player(float x, float y, int radius, BufferedImage[] imgPlayer, int[] keys, BufferedImage test) {
-        this(new MyVector(x, y), radius, imgPlayer, keys, test);
+    public Player(float x, float y, int radius, BufferedImage[] imgPlayer, int[] keys) {
+        this(new MyVector(x, y), radius, imgPlayer, keys);
     }
     //Getters and Setters
     public boolean getJumping() {
@@ -45,6 +43,9 @@ public class Player extends JPanel implements KeyListener {
     }
     public int getAcceleration(){
         return acceleration;
+    }
+    public void setRadius(int radius){
+        this.radius = radius;
     }
     //Functions
     public void paint(Graphics g){
@@ -67,67 +68,70 @@ public class Player extends JPanel implements KeyListener {
         g2d.drawImage(imgPlayer[currentSprite], transform, this);
     }
     public void move(int planetID) {
-        fixAngle();
-        if (moving) {
-            angle += acceleration;
-            if(accelerationtimer > 100){
-                if(planetID != 3){
-                    if (acceleration < 7) {
-                        acceleration++;
-                    }
-                    if(acceleration > 7){
-                        acceleration-= 3;
-                    }
-                }else{
-                    if (acceleration < 21) {
-                        acceleration+= 3;
-                    }
-                }
-                accelerationtimer = 0;
-            }
-           accelerationtimer++;
-        }
+        fixAngle(); //so the angles is always between 0 and 360
+        accelerate(planetID);
         if(jumping){
             height+=acceleration;
         }
     }
     public void fixAngle(){
-        if(angle> 360){
-            angle = 0;
-        }
-        if(angle < 0)
-        angle = 360;
+        if(angle> 360)angle = 0;
+        if(angle < 0)angle = 360;
     }
-    public boolean checkCollision(float planetX, float planetY){
-        if(MyVector.distanceSq(new MyVector((float)(pLocation.x + 100 + (100 + 42 + height)*Math.cos(Math.toRadians(angle - 135))),(float) (pLocation.y + 100 + (100 + 42 + height)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(planetX + 100, planetY + 100))<121*121){
-            land(planetX, planetY);
+    public int randomAngle(){
+        return (int)(Math.random()*360);
+    }
+    public void accelerate(int planetID){ //very retarded basic acceleration
+        if (moving) {
+            angle += acceleration;
+            if(accelerationtimer > 100){
+                if(planetID != 3){
+                    if (acceleration < 3) {
+                        acceleration++;
+                    }
+                    if(acceleration > 3){
+                        acceleration-= 3;
+                    }
+                }else{
+                    if (acceleration < 4) {
+                        acceleration+= 3;
+                    }
+                }
+                accelerationtimer = 0;
+            }
+            accelerationtimer++;
+        }
+    }
+    public boolean checkCollision(float planetX, float planetY, float pRadius){
+        if(MyVector.distanceSq(new MyVector((float)(pLocation.x + radius + (radius + 42 + height)*Math.cos(Math.toRadians(angle - 135))),(float) (pLocation.y + radius + (radius + 42 + height)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(planetX + pRadius, planetY + pRadius))<(21 + pRadius)*(21 + pRadius)){
+            land(planetX, planetY, pRadius);
             return true;
         }
         return false;
     }
-    public void land(float planetX, float planetY){
-        angle = (int) (Math.atan2((int) (pLocation.y + 100 + (100 + 42 + height)*Math.sin(Math.toRadians(angle - 135)))-planetY-100, (int) (pLocation.x + 100 + (100 + 42 + height)*Math.cos(Math.toRadians(angle - 135)))-planetX - 100)*180/3.14596) + 135;
+    public void land(float planetX, float planetY, float pRadius){
+        //Calculate new angle
+        angle = (int) (Math.atan2((int) (pLocation.y + radius + (radius + 42 + height)*Math.sin(Math.toRadians(angle - 135)))-planetY-pRadius, (int) (pLocation.x + radius + (radius + 42 + height)*Math.cos(Math.toRadians(angle - 135)))-planetX - pRadius)*180/3.14596) + 135;
         jumping = false;
+        moving = true;
+        radius = (int)pRadius;
         pLocation.x = planetX;
         pLocation.y = planetY;
         height = 0;
-        moving = true;
     }
     public void addKeyListener(JFrame frame) {
         frame.addKeyListener(this);
     }
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
-
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if(!jumping) {
             if (keyCode == keys[0]) {
                 moving = true;
-                if(acceleration == 0)acceleration++;
+                if(acceleration == 0)acceleration++; //retarded initial acceleration
             }
         }
         if (keyCode == keys[1]) {
