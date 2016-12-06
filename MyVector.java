@@ -312,17 +312,21 @@ public class MyVector extends Vec2f {
      * Returns a random MyVector
      * @param lowerBound the lowest x or y value that can be returned
      * @param upperBound the highest x or y value that can be returned
-     * @return a random MyVector of Real numbers
+     * @return a random MyVector of with components ranging from -1 to 1
      * */
-    /*public static MyVector randomMyVector(int lowerBound, int upperBound) {
+    public static MyVector randomMyVector() {
         Random rand = new Random();
-        float x = rand.nextInt(upperBound - lowerBound);
-        x = x > 0 ? x + lowerBound : -x + lowerBound;
-        float y = rand.nextInt(upperBound - lowerBound);
-        y = y > 0 ? y + lowerBound : -y + lowerBound;
+
+        // Choose random floats between 0 and 1
+        float x = rand.nextFloat();
+        float y = rand.nextFloat();
+
+        // Give the numbers a random sign
+        x = rand.nextBoolean() ? x : -x;
+        y = rand.nextBoolean() ? y : -y;
 
         return new MyVector(x, y);
-    }*/
+    }
 
     /**
      * Computes the angle (in degrees) between this core.MyVector and
