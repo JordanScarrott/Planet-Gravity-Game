@@ -10,6 +10,8 @@ public class Planet extends JPanel {
     private float radius;
     private int bounds;
     private float perimeter;
+    // Acceleration applied to players on a planet
+    private float planetaryAcceleration;
 
     // Constructor
     public Planet(MyVector location, float radius, int bounds, BufferedImage imgPlanet) {
@@ -20,6 +22,8 @@ public class Planet extends JPanel {
         // The center of the image
         center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
         perimeter = 2 * (float)Math.PI * this.radius;
+        // Scale the player's acceleration inversely to the planet's radius
+        planetaryAcceleration = 5 * (1 - this.radius / (PlanetGenerator.MAX_RADIUS + 10));
     }
 
     public Planet(float x, float y, float radius, int bounds, BufferedImage imgPlanet) {
