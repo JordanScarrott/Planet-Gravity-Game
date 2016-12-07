@@ -43,13 +43,15 @@ public abstract class ResourceLoader {
             randomFileNumber = rand.nextInt(imageFiles.length);
         } while(imageFiles[randomFileNumber].isDirectory());
 
+        // Prepare string to send to the loadImage() method
+        String[] pathSegments = folderPath.split("images/");
         String imageFileName = imageFiles[randomFileNumber].getName();
 
-        return loadImage("planets/" + imageFileName);
+        return loadImage(pathSegments[pathSegments.length-1] + "/" + imageFileName);
     }
 
     protected static BufferedImage getRandomPlanet() {
-        return getRandomImage("src/res/images/planets");
+        return getRandomImage("src/res/images/Planets");
     }
     
     protected static void loadAudio(String file) {
