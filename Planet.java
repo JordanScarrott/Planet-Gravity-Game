@@ -19,7 +19,7 @@ public class Planet extends JPanel {
         this.imgPlanet = imgPlanet;
         // The center of the image
         center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
-        perimeter = 2 * Math.PI * this.radius;
+        perimeter = 2 * (float)Math.PI * this.radius;
     }
     public Planet(float x, float y, float radius, int bounds, BufferedImage imgPlanet) {
         this(new MyVector(x, y), radius,bounds, imgPlanet);
