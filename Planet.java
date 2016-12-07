@@ -12,7 +12,7 @@ public class Planet extends JPanel {
     private float perimeter;
 
     // Constructor
-    public Planet(MyVector location, float radius,int bounds, BufferedImage imgPlanet) {
+    public Planet(MyVector location, float radius, int bounds, BufferedImage imgPlanet) {
         this.pLocation = location;
         this.radius = radius;
         this.bounds = bounds;
@@ -21,10 +21,15 @@ public class Planet extends JPanel {
         center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
         perimeter = 2 * (float)Math.PI * this.radius;
     }
+
     public Planet(float x, float y, float radius, int bounds, BufferedImage imgPlanet) {
-        this(new MyVector(x, y), radius,bounds, imgPlanet);
+        this(new MyVector(x, y), radius, bounds, imgPlanet);
     }
 
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.drawImage(imgPlanet, (int) pLocation.x, (int) pLocation.y, null);
+    }
 
     // Getters and Setters
     public MyVector getpLocation() {
@@ -38,11 +43,13 @@ public class Planet extends JPanel {
     public float getRadius() {
         return radius;
     }
-    public int getBbounds() {
-        return bounds;
-    }
+
     public void setRadius(float radius) {
         this.radius = radius;
+    }
+
+    public int getBbounds() {
+        return bounds;
     }
 
     public BufferedImage getImgPlanet() {
@@ -57,9 +64,11 @@ public class Planet extends JPanel {
         return center;
     }
 
-    public void paint(Graphics g) {
-        super.paint(g);
-        g.drawImage(imgPlanet, (int) pLocation.x, (int) pLocation.y, null);
+    public float getPerimeter() {
+        return perimeter;
     }
 
+    public void setPerimeter(float perimeter) {
+        this.perimeter = perimeter;
+    }
 }
