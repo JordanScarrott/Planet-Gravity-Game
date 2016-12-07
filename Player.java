@@ -6,11 +6,11 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Player extends JPanel implements KeyListener {
-    private BufferedImage[] imgPlayer = null;
-    private BufferedImage[] imgTumble = null;
+    private BufferedImage imgPlayer = null;
     private MyVector pLocation;
     private MyVector center;
-    private int currentSprite;
+    private int currentSpriteX;
+    private int currentSpriteY;
     private long lastTime = 0;
     private double delay = 100;
     private float height;
@@ -23,10 +23,9 @@ public class Player extends JPanel implements KeyListener {
     private int[] keys;
     private int accelerationtimer;
 
-    public Player(MyVector location, int radius, int bounds,BufferedImage[] imgPlayer, BufferedImage[] imgTumble,  int[] keys) {
+    public Player(MyVector location, int radius, int bounds,BufferedImage imgPlayer, int[] keys) {
         this.pLocation = location;
         this.imgPlayer = imgPlayer;
-        this.imgTumble = imgTumble;
         this.radius = radius;
         this.bounds = bounds;
         this.keys = keys;
@@ -35,8 +34,8 @@ public class Player extends JPanel implements KeyListener {
         accelerationtimer = 0;
     }
 
-    public Player(float x, float y, int radius, int bounds, BufferedImage[] imgPlayer, BufferedImage[] imgTumble, int[] keys) {
-        this(new MyVector(x, y), radius,bounds, imgPlayer, imgTumble, keys);
+    public Player(float x, float y, int radius, int bounds, BufferedImage imgPlayer, int[] keys) {
+        this(new MyVector(x, y), radius,bounds, imgPlayer, keys);
     }
     //Getters and Setters
     public boolean getJumping() {
@@ -53,27 +52,18 @@ public class Player extends JPanel implements KeyListener {
     }
     //Functions
     public void paint(Graphics g){
-        long newTime = System.currentTimeMillis();
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
         transform.translate(pLocation.x - height - bounds, pLocation.y - height- bounds);
         transform.rotate(Math.toRadians(angle), radius + height + bounds, radius + height + bounds) ;
         transform.rotate(Math.toRadians(-45), 21,21);
-        if (newTime-lastTime>=delay) {
-            lastTime = newTime;
-            if (currentSprite < 3) {
-                currentSprite++;
-            }
-            else {
-                currentSprite = 0;
-            }
-        }
-        if(!jumping) {
-            g2d.drawImage(imgPlayer[currentSprite], transform, this);
-        }else{
-            g2d.drawImage(imgTumble[currentSprite], transform, this);
-        }
+        animate();
+        if(!jumping)currentSpriteY = 0;
+        else currentSpriteY = 1;
+
+
+        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX* 42, currentSpriteY*42, 42, 42), transform, this);
         //g.fillRect((int)(pLocation.x + radius + (radius + height + height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(int)(pLocation.y + radius + (radius + height + height/2 + bounds)*Math.sin(Math.toRadians(angle - 135))), 10, 10);
 
     }
@@ -82,6 +72,18 @@ public class Player extends JPanel implements KeyListener {
         accelerate(planetID);
         if(jumping){
             height+=acceleration;
+        }
+    }
+    public void animate(){
+        long newTime = System.currentTimeMillis();
+        if (newTime-lastTime>=delay) {
+            lastTime = newTime;
+            if (currentSpriteX < 3) {
+                currentSpriteX++;
+            }
+            else {
+                currentSpriteX = 0;
+            }
         }
     }
     public void fixAngle(){

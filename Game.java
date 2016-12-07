@@ -12,17 +12,11 @@ public class Game extends JPanel {
     private int[][] keys = new int[2][2]; //Keyboard inputs for player 1
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
-    private BufferedImage[] playerImages = new BufferedImage[4];
-    private BufferedImage[] tumbleImages = new BufferedImage[4];
     public Game(JFrame frame) {
         imgBackground = ResourceLoader.loadImage("background.png");
         finished = false;
         generatePlanets();
         addPlayers(frame);
-        for (int i=1; i<=4; i++) { //Load Hamster Animation
-            playerImages[i-1] = ResourceLoader.loadImage("Hamster" + i + ".png");
-            tumbleImages[i-1] = ResourceLoader.loadImage("Tumble" + i + ".png");
-        }
     }
 
     public void paint(Graphics g) {
@@ -69,8 +63,8 @@ public class Game extends JPanel {
     public void addPlayers(JFrame frame){
         planetID[0] = 0;
         planetID[1] = 1;
-        players.add(new Player(planets.get(planetID[0]).getpLocation().x, planets.get(planetID[0]).getpLocation().y, (int)planets.get(planetID[0]).getRadius(),planets.get(planetID[0]).getBbounds(), playerImages, tumbleImages, keys[0]));
-        players.add(new Player(planets.get(planetID[1]).getpLocation().x, planets.get(planetID[1]).getpLocation().y, (int)planets.get(planetID[1]).getRadius(),planets.get(planetID[1]).getBbounds(), playerImages, tumbleImages, keys[1]));
+        players.add(new Player(planets.get(planetID[0]).getpLocation().x, planets.get(planetID[0]).getpLocation().y, (int)planets.get(planetID[0]).getRadius(),planets.get(planetID[0]).getBbounds(), ResourceLoader.loadImage("animate.png"), keys[0]));
+        players.add(new Player(planets.get(planetID[1]).getpLocation().x, planets.get(planetID[1]).getpLocation().y, (int)planets.get(planetID[1]).getRadius(),planets.get(planetID[1]).getBbounds(), ResourceLoader.loadImage("animate.png"), keys[1]));
         setPlayerKeys();
         for(int i = 0; i < players.size(); i++){
             players.get(i).addKeyListener(frame); //Enables use of Keyboard inputs for players
