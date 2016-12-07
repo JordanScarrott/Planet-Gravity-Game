@@ -8,18 +8,19 @@ public class Planet extends JPanel {
     private MyVector pLocation;
     private MyVector center;
     private float radius;
+    private int bounds;
 
     // Constructor
-    public Planet(MyVector location, float radius, BufferedImage imgPlanet) {
+    public Planet(MyVector location, float radius,int bounds, BufferedImage imgPlanet) {
         this.pLocation = location;
         this.radius = radius;
+        this.bounds = bounds;
         this.imgPlanet = imgPlanet;
         // The center of the image
         center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
-        center.add(location);
     }
-    public Planet(float x, float y, float radius, BufferedImage imgPlanet) {
-        this(new MyVector(x, y), radius, imgPlanet);
+    public Planet(float x, float y, float radius, int bounds, BufferedImage imgPlanet) {
+        this(new MyVector(x, y), radius,bounds, imgPlanet);
     }
 
 
@@ -35,7 +36,9 @@ public class Planet extends JPanel {
     public float getRadius() {
         return radius;
     }
-
+    public int getBbounds() {
+        return bounds;
+    }
     public void setRadius(float radius) {
         this.radius = radius;
     }
