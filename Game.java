@@ -13,6 +13,7 @@ public class Game extends JPanel {
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
     private BufferedImage[] playerImages = new BufferedImage[4];
+    private BufferedImage[] tumbleImages = new BufferedImage[4];
     public Game(JFrame frame) {
         imgBackground = ResourceLoader.loadImage("background.png");
         finished = false;
@@ -20,6 +21,7 @@ public class Game extends JPanel {
         addPlayers(frame);
         for (int i=1; i<=4; i++) { //Load Hamster Animation
             playerImages[i-1] = ResourceLoader.loadImage("Hamster" + i + ".png");
+            tumbleImages[i-1] = ResourceLoader.loadImage("Tumble" + i + ".png");
         }
     }
 
@@ -39,8 +41,8 @@ public class Game extends JPanel {
             players.get(i).move(planetID[i]);
             if(players.get(i).getJumping()){
                 for(int j= 0; j < planets.size(); j++) {
-                    if(j != planetID[0])
-                        if(players.get(i).checkCollision(planets.get(j).getpLocation().x, planets.get(j).getpLocation().y, planets.get(j).getRadius())){
+                    if(j != planetID[i])
+                        if(players.get(i).checkCollision(planets.get(j).getpLocation().x, planets.get(j).getpLocation().y, planets.get(j).getRadius(),planets.get(j).getBbounds())){
                             planetID[i] = j;
                             break;
                         }
@@ -67,8 +69,8 @@ public class Game extends JPanel {
     public void addPlayers(JFrame frame){
         planetID[0] = 0;
         planetID[1] = 1;
-        players.add(new Player(planets.get(planetID[0]).getpLocation().x, planets.get(planetID[0]).getpLocation().y, (int)planets.get(planetID[0]).getRadius(), playerImages, keys[0]));
-        players.add(new Player(planets.get(planetID[1]).getpLocation().x, planets.get(planetID[1]).getpLocation().y, (int)planets.get(planetID[1]).getRadius(), playerImages, keys[1]));
+        players.add(new Player(planets.get(planetID[0]).getpLocation().x, planets.get(planetID[0]).getpLocation().y, (int)planets.get(planetID[0]).getRadius(),planets.get(planetID[0]).getBbounds(), playerImages, tumbleImages, keys[0]));
+        players.add(new Player(planets.get(planetID[1]).getpLocation().x, planets.get(planetID[1]).getpLocation().y, (int)planets.get(planetID[1]).getRadius(),planets.get(planetID[1]).getBbounds(), playerImages, tumbleImages, keys[1]));
         setPlayerKeys();
         for(int i = 0; i < players.size(); i++){
             players.get(i).addKeyListener(frame); //Enables use of Keyboard inputs for players
@@ -83,10 +85,10 @@ public class Game extends JPanel {
         keys[1][1] = KeyEvent.VK_P; //Jump
     }
     public void generatePlanets(){
-        planets.add(new Planet(56, 74, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(525, 356, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(550, 88, 75, ResourceLoader.loadImage("planets/greenplanet.png")));
-        planets.add(new Planet(250, 350, 50, ResourceLoader.loadImage("planets/redplanet.png")));
+        planets.add(new Planet(56, 74, 100, 6, ResourceLoader.loadImage("planets/orangeplanet.png")));
+        planets.add(new Planet(525, 356, 50, 20, ResourceLoader.loadImage("planets/testpurpleplanet.png")));
+        planets.add(new Planet(550, 88, 75, 10, ResourceLoader.loadImage("planets/greenplanet.png")));
+        planets.add(new Planet(250, 350, 50,14, ResourceLoader.loadImage("planets/redplanet.png")));
     }
     public void Winner(int playerID){
         System.out.println("Winner is " + playerID); //Do winning stuff here
