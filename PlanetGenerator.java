@@ -7,7 +7,7 @@ public class PlanetGenerator {
     /**
     * Planet limiting parameters
     */
-    public static final int MIN_RADIUS = 50;
+    public static final int MIN_RADIUS = 70;
     public static final int MAX_RADIUS = 250;
     public static final int PLAYER_SIZE = 45;
 
@@ -28,65 +28,76 @@ public class PlanetGenerator {
         this.height = frameY;
         planets = new ArrayList<>();
         rand = new Random();
-        numOfPlanets = 3;
+        numOfPlanets = 4;
 
-        generatePlanets();
+        generatePlanets2();
     }
 
     /**
-     * Randomly generate a number of Planet objects
+     * Version 2 of the planet generation algorithm
      * */
-    public void generatePlanets() {
-        int tempRadius;
+    public void generatePlanets2() {
+        int tempRadius = 0;
+        int frameSpacer;
+        MyVector minLocation = new MyVector();
+        MyVector maxLocation = new MyVector();
+        MyVector interval = new MyVector();
         MyVector tempLocation;
+        int count;
+
         for(int i = 0; i < numOfPlanets; i++) {
-            // Choose a random location and radius for the new planet
-            tempRadius = rand.nextInt(MAX_RADIUS) + MIN_RADIUS;
-
+            count = 0;
             do {
+                if(count%1000 == 0) {
+                    // Choose a random radius within the required range
+                    tempRadius = rand.nextInt(MAX_RADIUS - MIN_RADIUS) + MIN_RADIUS;
+                    // minimum space between planet and frame borders
+                    frameSpacer = tempRadius + PLAYER_SIZE;
+
+                    minLocation.set(frameSpacer, frameSpacer);
+                    maxLocation.set(width - frameSpacer, height - frameSpacer);
+                    // Interval of all acceptable planet locations for this radius
+                    interval = MyVector.sub(maxLocation, minLocation);
+                }
+
+                // Determine possible location
                 tempLocation = MyVector.randomMyVector();
-                tempLocation.respectiveMult(width, height);
-            } while (!boundaryChecks(tempLocation, tempRadius) && planetChecks(tempLocation, tempRadius));
+                // Scale the random vector
+                tempLocation.respectiveMult(interval.x, interval.y);
+                // Shift to correct range
+                tempLocation.add(minLocation);
 
-            planets.add(new Planet(tempLocation, (float)tempRadius, ResourceLoader.getRandomPlanet()));
+                count++;
+            } while(collidesWithExistingPlanets(tempLocation, tempRadius));
 
-            System.out.println(planets.get(i).getpLocation() + "\t" + planets.get(i).getRadius());
+            planets.add(new Planet(tempLocation, tempRadius, ResourceLoader.getRandomPlanet()));
+            Planet temp = planets.get(i);
+//            System.out.println(planets.get(i).getpLocation() + "\t" + planets.get(i).getRadius());
         }
     }
 
     /**
-    * Returns true if specified Planet does NOT collide with the frame borders
+     * Returns true if specified Planet collides with the existing Planets
      * @param location the location of the center of the Planet in question
      * @param radius the radius of the Planet in question
-     * @return true if specified Planet does NOT collide with the frame borders
-    */
-    private boolean boundaryChecks(MyVector location, int radius) {
-        if ((location.x - radius - PLAYER_SIZE < 0) || (location.x + radius + PLAYER_SIZE > width)) {
-            return false;
-        }
-        if ((location.y - radius - PLAYER_SIZE < 0) || (location.y + radius + PLAYER_SIZE > height)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns true if specified Planet does NOT collide with the existing Planets
-     * @param location the location of the center of the Planet in question
-     * @param radius the radius of the Planet in question
-     * @return true if specified Planet does NOT collide with the existing Planets
+     * @return true if specified Planet collides with the existing Planets
      */
-    private boolean planetChecks(MyVector location, int radius) {
+    private boolean collidesWithExistingPlanets(MyVector location, int radius) {
+        if (planets.size() < 1) return false;
+        float tempDistSq;
+        float tempSumRadii;
+
         int playerBoundary = 2 * PLAYER_SIZE;
         for (Planet p : planets) {
 //            if distSq between planet and proposed planet < (sum of radii)^2
-            if (MyVector.distanceSq(location, p.getpLocation())
-                    < (p.getRadius() + radius + playerBoundary) * (p.getRadius() + radius + playerBoundary)) {
-                return false;
+            tempDistSq = MyVector.distanceSq(location, p.getCenter());
+            tempSumRadii = (p.getRadius() + radius + playerBoundary) * (p.getRadius() + radius + playerBoundary);
+            if (tempDistSq < tempSumRadii) {
+                return true;
             }
+//            System.out.println(MyVector.distanceSq(location, p.getCenter()) + "\t" + (p.getRadius() + radius + playerBoundary) * (p.getRadius() + radius + playerBoundary));
         }
-        return true;
+        return false;
     }
 
 
