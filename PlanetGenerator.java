@@ -70,7 +70,7 @@ public class PlanetGenerator {
                 count++;
             } while(collidesWithExistingPlanets(tempLocation, tempRadius));
 
-            planets.add(new Planet(tempLocation, tempRadius, ResourceLoader.getRandomPlanet()));
+//             planets.add(new Planet(tempLocation, tempRadius, ResourceLoader.getRandomPlanet()));
             Planet temp = planets.get(i);
 //            System.out.println(planets.get(i).getpLocation() + "\t" + planets.get(i).getRadius());
         }
