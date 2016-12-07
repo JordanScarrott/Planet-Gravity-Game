@@ -27,28 +27,29 @@ public abstract class ResourceLoader {
     */
     protected static BufferedImage getRandomImage(String folderPath) {
         File folderToSearch = new File(folderPath);
-        System.out.println(folderToSearch.getAbsolutePath());
 
-        if (!folderToSearch.isDirectory()) return null;
+        // Return null if this method was not supplied with a directory
+        if (!folderToSearch.isDirectory()) {
+            System.out.println("ResourceLoader - THIS IS NOT A DIR");
+            return null;
+        }
 
+        File[] imageFiles = folderToSearch.listFiles();
         Random rand = new Random();
-        int randomFileNumber = rand.nextInt(folderToSearch.listFiles().length);
-        System.out.println(randomFileNumber);
+        int randomFileNumber;
 
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        InputStream filePath = loader.getResourceAsStream(folderToSearch.listFiles()[randomFileNumber].getPath());
-        BufferedImage img = null;
-        try {
-            img = ImageIO.read(filePath);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return img;
+        // Make sure we don't pick a folder instead of a file
+        do {
+            randomFileNumber = rand.nextInt(imageFiles.length);
+        } while(imageFiles[randomFileNumber].isDirectory());
+
+        String imageFileName = imageFiles[randomFileNumber].getName();
+
+        return loadImage("planets/" + imageFileName);
     }
 
     protected static BufferedImage getRandomPlanet() {
-        return getRandomImage("res/images/planets");
+        return getRandomImage("src/res/images/planets");
     }
     
     protected static void loadAudio(String file) {
