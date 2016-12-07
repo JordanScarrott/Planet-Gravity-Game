@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class Game extends JPanel {
-
+    private BufferedImage imgBackground;
     ArrayList<Planet> planets = new ArrayList<Planet>();
     ArrayList<Player> players = new ArrayList<Player>();
     private int[] planetID = new int[2]; //Indicates on which planet the respective player is on
@@ -14,6 +14,7 @@ public class Game extends JPanel {
     private boolean finished;
     private BufferedImage[] playerImages = new BufferedImage[4];
     public Game(JFrame frame) {
+        imgBackground = ResourceLoader.loadImage("background.png");
         finished = false;
         generatePlanets();
         addPlayers(frame);
@@ -24,6 +25,7 @@ public class Game extends JPanel {
 
     public void paint(Graphics g) {
         super.paint(g);
+        g.drawImage(imgBackground, 0, 0, null);
         for(Planet i : planets){
             i.paint(g);
         }
@@ -81,14 +83,10 @@ public class Game extends JPanel {
         keys[1][1] = KeyEvent.VK_P; //Jump
     }
     public void generatePlanets(){
-        planets.add(new Planet(0, 0, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(250, 0, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(550, 0, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(250, 250, 50, ResourceLoader.loadImage("planets/redplanet.png")));
-        planets.add(new Planet(500, 500, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(0, 500, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(0,250, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(500, 250, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
+        planets.add(new Planet(56, 74, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
+        planets.add(new Planet(525, 356, 100, ResourceLoader.loadImage("planets/orangeplanet.png")));
+        planets.add(new Planet(550, 88, 75, ResourceLoader.loadImage("planets/greenplanet.png")));
+        planets.add(new Planet(250, 350, 50, ResourceLoader.loadImage("planets/redplanet.png")));
     }
     public void Winner(int playerID){
         System.out.println("Winner is " + playerID); //Do winning stuff here
