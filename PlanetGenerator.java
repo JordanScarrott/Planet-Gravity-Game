@@ -9,7 +9,6 @@ public class PlanetGenerator {
     */
     public static final int MIN_RADIUS = 50;
     public static final int MAX_RADIUS = 250;
-
     public static final int PLAYER_SIZE = 45;
 
     private ArrayList<Planet> planets;
@@ -19,8 +18,8 @@ public class PlanetGenerator {
 
     private int width, height;
 
-    // Constructor
     /**
+     * Constructor
     * @param frameX the width of the current JFrame
     * @param frameY the height of the current JFrame
     */
@@ -29,13 +28,14 @@ public class PlanetGenerator {
         this.height = frameY;
         planets = new ArrayList<>();
         rand = new Random();
-        numOfPlanets = 5;
+        numOfPlanets = 3;
+
+        generatePlanets();
     }
 
-
-    /*
-    *
-    **/
+    /**
+     * Randomly generate a number of Planet objects
+     * */
     public void generatePlanets() {
         int tempRadius;
         MyVector tempLocation;
@@ -43,18 +43,22 @@ public class PlanetGenerator {
             // Choose a random location and radius for the new planet
             tempRadius = rand.nextInt(MAX_RADIUS) + MIN_RADIUS;
 
-            /*do {
+            do {
                 tempLocation = MyVector.randomMyVector();
                 tempLocation.respectiveMult(width, height);
-            } while (!boundaryChecks(tempLocation, tempRadius) && planetChecks());
+            } while (!boundaryChecks(tempLocation, tempRadius) && planetChecks(tempLocation, tempRadius));
 
-            planets.add(new Planet(tempLocation, tempRadius, ResourceLoader.getRandomPlanet()));*/
-            // planets.add(new Planet(MyVector.randomMyVector(), tempRadius, ResourceLoader.randomImage()));
+            planets.add(new Planet(tempLocation, (float)tempRadius, ResourceLoader.getRandomPlanet()));
+
+            System.out.println(planets.get(i).getpLocation() + "\t" + planets.get(i).getRadius());
         }
     }
 
     /**
-    * Returns true if Specified does not collide with the frame borders
+    * Returns true if specified Planet does NOT collide with the frame borders
+     * @param location the location of the center of the Planet in question
+     * @param radius the radius of the Planet in question
+     * @return true if specified Planet does NOT collide with the frame borders
     */
     private boolean boundaryChecks(MyVector location, int radius) {
         if ((location.x - radius - PLAYER_SIZE < 0) || (location.x + radius + PLAYER_SIZE > width)) {
@@ -67,7 +71,55 @@ public class PlanetGenerator {
         return true;
     }
 
-    private boolean planetChecks() {
+    /**
+     * Returns true if specified Planet does NOT collide with the existing Planets
+     * @param location the location of the center of the Planet in question
+     * @param radius the radius of the Planet in question
+     * @return true if specified Planet does NOT collide with the existing Planets
+     */
+    private boolean planetChecks(MyVector location, int radius) {
+        int playerBoundary = 2 * PLAYER_SIZE;
+        for (Planet p : planets) {
+//            if distSq between planet and proposed planet < (sum of radii)^2
+            if (MyVector.distanceSq(location, p.getpLocation())
+                    < (p.getRadius() + radius + playerBoundary) * (p.getRadius() + radius + playerBoundary)) {
+                return false;
+            }
+        }
         return true;
+    }
+
+
+    // Getters and Setters
+    public ArrayList<Planet> getPlanets() {
+        return planets;
+    }
+
+    public void setPlanets(ArrayList<Planet> planets) {
+        this.planets = planets;
+    }
+
+    public int getNumOfPlanets() {
+        return numOfPlanets;
+    }
+
+    public void setNumOfPlanets(int numOfPlanets) {
+        this.numOfPlanets = numOfPlanets;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 }
