@@ -8,8 +8,8 @@ public class Game extends JPanel {
     private BufferedImage imgBackground;
     ArrayList<Planet> planets = new ArrayList<Planet>();
     ArrayList<Player> players = new ArrayList<Player>();
-    private int[] planetID = new int[2]; //Indicates on which planet the respective player is on
-    private int[][] keys = new int[2][2]; //Keyboard inputs for player 1
+    private int[] planetID = new int[4]; //Indicates on which planet the respective player is on
+    private int[][] keys = new int[4][2]; //Keyboard inputs for player 1
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
     public Game(JFrame frame) {
@@ -52,23 +52,37 @@ public class Game extends JPanel {
         this.finished = finished;
     }
     public void collision() {
-        if (planetID[0] == planetID[1]) {
-            if (players.get(0).getAngle() > players.get(1).getAngle() - playerbounds && players.get(0).getAngle() < players.get(1).getAngle() + playerbounds)  {
-                if(players.get(0).getAcceleration() > players.get(1).getAcceleration()) {
-                    Winner(1);
-                }else Winner(2);
+        for(int i = 0; i < players.size()-1; i++) {
+            if (planetID[i] != -1){
+                if (planetID[i] == planetID[i + 1]) {
+                    if (players.get(i).getAngle() > players.get(i + 1).getAngle() - playerbounds && players.get(i).getAngle() < players.get(i + 1).getAngle() + playerbounds) {
+                        if (players.get(i).getAcceleration() > players.get(i + 1).getAcceleration()) {
+                            players.remove(i + 1);
+                            planetID[i+1] = -1;
+                            System.out.println("player " + (i + 2) + " was killed");
+                        } else {
+                            players.remove(i);
+                            planetID[i] = -1;
+                            System.out.println("player " + (i+1) + " was killed");
+                        }
+                    }
+                }
             }
         }
     }
     public void addPlayers(JFrame frame){
-        planetID[0] = 0;
-        planetID[1] = 1;
-        players.add(new Player(planets.get(planetID[0]).getpLocation().x, planets.get(planetID[0]).getpLocation().y, (int)planets.get(planetID[0]).getRadius(),planets.get(planetID[0]).getBbounds(), ResourceLoader.loadImage("animate.png"), keys[0]));
-        players.add(new Player(planets.get(planetID[1]).getpLocation().x, planets.get(planetID[1]).getpLocation().y, (int)planets.get(planetID[1]).getRadius(),planets.get(planetID[1]).getBbounds(), ResourceLoader.loadImage("animate.png"), keys[1]));
+        for(int i = 0; i < 4; i++) {
+            randomSpawn(i);
+            players.add(new Player(planets.get(planetID[i]).getpLocation().x, planets.get(planetID[i]).getpLocation().y, (int) planets.get(planetID[i]).getRadius(), planets.get(planetID[i]).getBbounds(), ResourceLoader.loadImage("animate.png"), keys[i]));
+        }
         setPlayerKeys();
         for(int i = 0; i < players.size(); i++){
             players.get(i).addKeyListener(frame); //Enables use of Keyboard inputs for players
         }
+    }
+    public void randomSpawn(int i){ //Random a planet for player to spawn on
+        planetID[i] = (int)(Math.random()*planets.size());
+        //System.out.println((int)(Math.random()*planets.size()));     //printing out values in menu screen, Investigate this
     }
     public void setPlayerKeys(){
         //Player1
@@ -77,6 +91,12 @@ public class Game extends JPanel {
         //Player 2
         keys[1][0] = KeyEvent.VK_O; //Move
         keys[1][1] = KeyEvent.VK_P; //Jump
+        //Player 3
+        keys[2][0] = KeyEvent.VK_N; //Move
+        keys[2][1] = KeyEvent.VK_M; //Jump
+        //Player 4
+        keys[3][0] = KeyEvent.VK_C; //Move
+        keys[3][1] = KeyEvent.VK_V; //Jump
     }
     public void generatePlanets(){
         planets.add(new Planet(56, 74, 100, 6, ResourceLoader.loadImage("planets/orangeplanet.png")));
