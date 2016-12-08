@@ -31,15 +31,14 @@ public class Game extends JPanel {
     }
 
     public void move() {
-        for(int i = 0; i < players.size(); i++){
-            players.get(i).move(planetID[i]);
-            if(players.get(i).getJumping()){
-                for(int j= 0; j < planets.size(); j++) {
-                    if(j != planetID[i])
-                        if(players.get(i).checkCollision(planets.get(i))){
-                            planetID[i] = j;
-                            break;
-                        }
+        for (int i = 0; i < players.size(); i++){
+            players.get(i).move();
+            if (players.get(i).getJumping()){
+                for (int j = 0; j < planets.size(); j++) {
+                    if (players.get(i).getRelativePlanet() != planets.get(j)) {
+                        players.get(i).checkCollision(planets.get(j));
+                        break;
+                    }
                 }
             }
         }
@@ -70,7 +69,7 @@ public class Game extends JPanel {
     public void addPlayers(JFrame frame){
         for(int i = 0; i < 4; i++) {
             randomSpawn(i);
-            players.add(new Player(planets.get(i), ResourceLoader.loadImage("animate.png"), keys[i]));
+            players.add(new Player(planets.get(planetID[i]), ResourceLoader.loadImage("TheSpriteSheet.png"), keys[i]));
         }
         setPlayerKeys();
         for(int i = 0; i < players.size(); i++){
