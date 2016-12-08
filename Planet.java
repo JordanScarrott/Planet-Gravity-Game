@@ -31,6 +31,7 @@ public class Planet extends JPanel {
         this.imgPlanet = imgPlanet;
         // The center of the image
         center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
+        center.add(pLocation);
         perimeter = 2 * (float)Math.PI * this.radius;
         // Scale the player's acceleration inversely to the planet's radius
         planetaryAcceleration = MAX_ACCELERATION * (float)(1 - ((double)this.radius / (PlanetGenerator.MAX_RADIUS + 10f)));
