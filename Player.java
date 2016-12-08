@@ -64,7 +64,6 @@ public class Player extends JPanel implements KeyListener {
                 , keys
         );
         this.relativePlanet = relPla;
-//        System.out.println(this.relativePlanet);
     }
 
     public void paint(Graphics g){
@@ -74,9 +73,6 @@ public class Player extends JPanel implements KeyListener {
         AffineTransform transform = new AffineTransform();
         transform.translate(pLocation.x - height - bounds, pLocation.y - height- bounds);
         transform.rotate(radLocation / relativePlanet.getPerimeter(), radius + height + bounds, radius + height + bounds) ;
-//         if (relativePlanet.getRadius() == 150) {
-//             System.out.println(radLocation / relativePlanet.getPerimeter());
-//         }
         transform.rotate(Math.toRadians(-45), 21, 21);
 
         animate();
@@ -149,6 +145,7 @@ public class Player extends JPanel implements KeyListener {
             land(planet.getpLocation().x, planet.getpLocation().y, planet.getRadius(), planet.getBbounds());
             return true;
         }*/
+        System.out.println(MyVector.distanceSq(MyVector.add(this.getpLocation(), new MyVector(21, 21)), planet.getCenter()) + "\t" + (21 + planet.getRadius()) * (21 + planet.getRadius()));
         if (MyVector.distanceSq(MyVector.add(this.getpLocation(), new MyVector(21, 21)), planet.getCenter()) < (21 + planet.getRadius()) * (21 + planet.getRadius())) {
 //            System.out.println("askdfhalksjdhflkjashdflkjaslkdfh");
             relativePlanet = planet;
@@ -183,7 +180,7 @@ public class Player extends JPanel implements KeyListener {
         if(!jumping) {
             if (keyCode == keys[0]) {
                 moving = true;
-                if(radAcceleration == 0) radAcceleration++; //retarded initial acceleration
+                if(radAcceleration == 0) radAcceleration = relativePlanet.getPlanetaryAcceleration();
             }
         }
         if(moving) {
