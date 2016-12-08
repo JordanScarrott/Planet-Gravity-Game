@@ -59,7 +59,7 @@ public abstract class ResourceLoader {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             Clip clip = AudioSystem.getClip();
-            AudioInputStream inputStream = AudioSystem.getAudioInputStream(loader.getResourceAsStream("res/sound/" + file));
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(loader.getResourceAsStream("res/sounds/" + file));
             clip.open(inputStream);
             clip.start();
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException exx) {
