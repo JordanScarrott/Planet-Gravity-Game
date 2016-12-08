@@ -11,12 +11,14 @@ public class Player extends JPanel implements KeyListener {
 
     private BufferedImage imgPlayer = null;
     private MyVector pLocation;
+    private MyVector pVelocity;
     private MyVector center;
 
     /**
      * The planet that the player will rotate around
      * */
     private Planet relativePlanet;
+    private MyVector transform;
 
     private float radLocation;
     private float radVelocity;
@@ -32,10 +34,16 @@ public class Player extends JPanel implements KeyListener {
     private double angle;
     private boolean moving = false;
     private boolean jumping = false;
+    /**
+     * True if Normal Vector has already been computed for the current jump
+     * */
+    private boolean isFlying = false;
     private int[] keys;
 
     public Player(MyVector location, float radius, int bounds, BufferedImage imgPlayer, int[] keys) {
         this.pLocation = location;
+        pVelocity = new MyVector();
+        transform = new MyVector();
         radLocation = 0;
         radVelocity = 0;
         radAcceleration = 0;
@@ -76,20 +84,34 @@ public class Player extends JPanel implements KeyListener {
         transform.rotate(Math.toRadians(-45), 21, 21);
 
         animate();
-        if(!jumping)currentSpriteY = 0;
+        if(!jumping) currentSpriteY = 0;
         else currentSpriteY = 1;
 
-
-        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX* 42, currentSpriteY*42, 42, 42), transform, this);
+        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX * 42, currentSpriteY * 42, 42, 42), transform, this);
         //g.fillRect((int)(pLocation.x + radius + (radius + height + height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(int)(pLocation.y + radius + (radius + height + height/2 + bounds)*Math.sin(Math.toRadians(angle - 135))), 10, 10);
 
     }
 
     public void move() {
         update();
-        if(jumping){
-            // temporary thing I think 10:57am 08-12-2016
-            height += JUMP_VELOCITY;
+        transform = Rotation.rotate(MyVector.add(pLocation, relativePlanet.getCenter())
+                , radLocation / relativePlanet.getPerimeter());
+        if (jumping) {
+            if (!isFlying) {
+                transform = Rotation.rotate(MyVector.add(pLocation, relativePlanet.getCenter())
+                        , radLocation / relativePlanet.getPerimeter());
+//                System.out.println(transform);
+                // Normalized Difference Vector representing Normal vector (heading)
+                pVelocity = MyVector.sub(relativePlanet.getCenter(), transform).normalize();
+//                System.out.println(pVelocity);
+                // Scale it
+                pVelocity.mult(JUMP_VELOCITY);
+//                System.out.println(relativePlanet.getCenter() + "\t" + pLocation);
+//                System.out.println(pVelocity);
+                isFlying = true;
+            }
+            // Apply jumping velocity to location
+            pLocation.add(pVelocity);
         }
     }
 
@@ -141,28 +163,36 @@ public class Player extends JPanel implements KeyListener {
 
 
     public boolean checkCollision(Planet planet){
-        /*if(MyVector.distanceSq(new MyVector((float)(pLocation.x + radius + (radius + height+ height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(float) (pLocation.y + radius + (radius + height + height/2+ bounds)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(planet.getpLocation().x + planet.getRadius(), planet.getpLocation().y + planet.getRadius())) <= (21 + planet.getRadius())*(21 + planet.getRadius())){
+        if(MyVector.distanceSq(new MyVector((float)(pLocation.x + radius + (radius + height+ height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(float) (pLocation.y + radius + (radius + height + height/2+ bounds)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(planet.getpLocation().x + planet.getRadius(), planet.getpLocation().y + planet.getRadius())) <= (21 + planet.getRadius())*(21 + planet.getRadius())){
             land(planet.getpLocation().x, planet.getpLocation().y, planet.getRadius(), planet.getBbounds());
-            return true;
-        }*/
-        System.out.println(MyVector.distanceSq(MyVector.add(this.getpLocation(), new MyVector(21, 21)), planet.getCenter()) + "\t" + (21 + planet.getRadius()) * (21 + planet.getRadius()));
-        if (MyVector.distanceSq(MyVector.add(this.getpLocation(), new MyVector(21, 21)), planet.getCenter()) < (21 + planet.getRadius()) * (21 + planet.getRadius())) {
-//            System.out.println("askdfhalksjdhflkjashdflkjaslkdfh");
             relativePlanet = planet;
             return true;
         }
         return false;
     }
 
-    public void land(float planetX, float planetY, float pRadius, int pBounds) {
+    public double findGridX(){
+        return pLocation.x + radius + (radius + height+ height/2 + bounds)*Math.cos(Math.toRadians(angle - 135));
+    }
+    public double findGridY(){
+        return pLocation.y + radius + (radius + height + height/2+ bounds)*Math.sin(Math.toRadians(angle - 135));
+    }
+
+    /**
+     *
+     * */
+    public void land(float planetX, float planetY, float pRadius, int pBounds){
         //Calculate new angle
-        angle = (int) (Math.atan2((int) (pLocation.y + radius + (radius + height + height/2 + bounds)*Math.sin(Math.toRadians(angle - 135)))-planetY-pRadius, (int) (pLocation.x + radius + (radius + height + height/2+ bounds)*Math.cos(Math.toRadians(angle - 135)))-planetX - pRadius)*180/Math.PI) + 135;
+        angle = (int) -(Math.atan2((int) findGridY()-planetY-pRadius, (int) findGridX()-planetX - pRadius)*180/Math.PI) + 135;
         jumping = false;
         moving = true;
         radius = (int)pRadius;
         bounds = pBounds;
         pLocation.x = planetX;
         pLocation.y = planetY;
+        currentSpriteX = 0;
+        currentSpriteY = 0;
+//        animationLand = true;
         height = 0;
     }
 
@@ -178,12 +208,15 @@ public class Player extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         if(!jumping) {
+            // Move
             if (keyCode == keys[0]) {
                 moving = true;
+                // Set the acceleration for the player on the specific planet
                 if(radAcceleration == 0) radAcceleration = relativePlanet.getPlanetaryAcceleration();
             }
         }
         if(moving) {
+            // Jump
             if (keyCode == keys[1]) {
                 moving = false;
                 jumping = true;
@@ -249,5 +282,13 @@ public class Player extends JPanel implements KeyListener {
 
     public void setRadAcceleration(float radAcceleration) {
         this.radAcceleration = radAcceleration;
+    }
+
+    public MyVector getpVelocity() {
+        return pVelocity;
+    }
+
+    public void setpVelocity(MyVector pVelocity) {
+        this.pVelocity = pVelocity;
     }
 }
