@@ -25,14 +25,14 @@ public class Player extends JPanel implements KeyListener {
     private long lastTime = 0;
     private double delay = 100;
     private float height;
-    private int radius;
+    private float radius;
     private int bounds;
     private float angle;
     private boolean moving = false;
     private boolean jumping = false;
     private int[] keys;
 
-    public Player(MyVector location, int radius, int bounds, BufferedImage imgPlayer, int[] keys) {
+    public Player(MyVector location, float radius, int bounds, BufferedImage imgPlayer, int[] keys) {
         this.pLocation = location;
         radLocation = 0;
         radVelocity = 0;
@@ -44,8 +44,23 @@ public class Player extends JPanel implements KeyListener {
         angle = randomAngle();
     }
 
-    public Player(float x, float y, int radius, int bounds, BufferedImage imgPlayer, int[] keys) {
+    public Player(float x, float y, float radius, int bounds, BufferedImage imgPlayer, int[] keys) {
         this(new MyVector(x, y), radius, bounds, imgPlayer, keys);
+    }
+
+    /**
+     * @param relPla the planet that this player is relative to / rotates around
+     * @param imgPlayer the players image
+     * @param keys controls for this player
+     * */
+    public Player(Planet relPla, BufferedImage imgPlayer, int[] keys) {
+        this(relPla.getpLocation().x
+                , relPla.getpLocation().y
+                , relPla.getRadius()
+                , relPla.getBbounds()
+                , imgPlayer
+                , keys
+        );
     }
 
 
