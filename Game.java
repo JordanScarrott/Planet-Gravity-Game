@@ -70,7 +70,7 @@ public class Game extends JPanel {
     public void addPlayers(JFrame frame){
         for(int i = 0; i < 4; i++) {
             randomSpawn(i);
-            players.add(new Player(planets.get(planetID[i]).getpLocation().x, planets.get(planetID[i]).getpLocation().y, (int) planets.get(planetID[i]).getRadius(), planets.get(planetID[i]).getBbounds(), ResourceLoader.loadImage("animate.png"), keys[i]));
+            players.add(new Player(planets.get(i), ResourceLoader.loadImage("animate.png"), keys[i]));
         }
         setPlayerKeys();
         for(int i = 0; i < players.size(); i++){
