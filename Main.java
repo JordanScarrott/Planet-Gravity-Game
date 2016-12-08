@@ -1,9 +1,11 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Main {
     static JFrame frame = new JFrame();
+    static JFrame currentFrame;
 
     public static void main(String[] args) throws InterruptedException {
         frame.setSize(800, 600);  // Window Size
@@ -17,6 +19,7 @@ public class Main {
     public static void runnit() throws InterruptedException {
          Menu menu = new Menu(frame);
          Game game = new Game(frame);
+        ResourceLoader.loadAudio("bgm.wav");
         //Loop
         while(true) {
             menu = new Menu(frame);
@@ -26,9 +29,10 @@ public class Main {
         }
     }
     public static void Menu(JFrame frame, Menu menu){
-        frame.add(menu);
+        currentFrame = frame;
+        currentFrame.add(menu);
         menu.setVisible(true);
-        frame.revalidate();
+        currentFrame.revalidate();
         while(!menu.getFinished()){
             menu.repaint();
             menu.move();
@@ -39,13 +43,15 @@ public class Main {
             }
         }
         menu.setFinished(false);
-        frame.remove(menu);
+        currentFrame.remove(menu);
+        currentFrame = null;
     }
     public static void Game(JFrame frame, Game game){
-        frame.add(game);
+        currentFrame = frame;
+        currentFrame.add(game);
         game.setVisible(true);
-        frame.revalidate();
-        frame.repaint();
+        currentFrame.revalidate();
+        currentFrame.repaint();
         while(!game.getFinished()){
             game.repaint();
             game.move();
@@ -56,6 +62,7 @@ public class Main {
             }
         }
         game.setFinished(false);
-        frame.remove(game);
+        currentFrame.remove(game);
+        currentFrame = null;
     }
 }
