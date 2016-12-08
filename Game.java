@@ -36,8 +36,11 @@ public class Game extends JPanel {
             if (players.get(i).getJumping()){
                 for (int j = 0; j < planets.size(); j++) {
                     if (players.get(i).getRelativePlanet() != planets.get(j)) {
-                        players.get(i).checkCollision(planets.get(j));
-                        break;
+                        if (players.get(i).checkCollision(planets.get(j))) {
+                            System.out.println(planets.get(j).getpLocation());
+                            planetID[i] = j;
+                            break;
+                        }
                     }
                 }
             }
