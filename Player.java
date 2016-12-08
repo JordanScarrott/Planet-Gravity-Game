@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 
 public class Player extends JPanel implements KeyListener {
 
+    public static final int JUMP_VELOCITY = 5;
+
     private BufferedImage imgPlayer = null;
     private MyVector pLocation;
     private MyVector center;
@@ -61,15 +63,16 @@ public class Player extends JPanel implements KeyListener {
                 , imgPlayer
                 , keys
         );
+        this.relativePlanet = relPla;
+//        System.out.println(this.relativePlanet);
     }
-
 
     public void paint(Graphics g){
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
         transform.translate(pLocation.x - height - bounds, pLocation.y - height- bounds);
-        transform.rotate(Math.toRadians(radLocation / relativePlanet.getPerimeter()), radius + height + bounds, radius + height + bounds) ;
+        transform.rotate(radLocation / relativePlanet.getPerimeter(), radius + height + bounds, radius + height + bounds) ;
         transform.rotate(Math.toRadians(-45), 21, 21);
         animate();
         if(!jumping)currentSpriteY = 0;
@@ -81,24 +84,40 @@ public class Player extends JPanel implements KeyListener {
 
     }
 
+    public void move(int planetID) {
+        update();
+        if(jumping){
+            // temporary thing I think 10:57am 08-12-2016
+            height += JUMP_VELOCITY;
+        }
+    }
+
+    public void update() {
+//        clampRadLocation();
+        clampVelocity();
+        applyForce();
+    }
+
     /**
      * Keeps the radLocation between 0 and 2.PI.r
      * */
     public void clampRadLocation() {
-        if (radLocation > relativePlanet.getPerimeter()) {
-            radLocation /= relativePlanet.getPerimeter();
-        }
+        radLocation %= relativePlanet.getPerimeter();
     }
 
-    public void move(int planetID) {
-        clampRadLocation();
-        // Apply Acceleration
-        radVelocity += radAcceleration;
-        radLocation += radVelocity;
+    /**
+     * If radVelocity is greater than Planet.MAX_VELOCITY sets it to Planet.MAX_VELOCITY
+     * */
+    public void clampVelocity() {
+        radVelocity = (radVelocity > Planet.MAX_VELOCITY) ? Planet.MAX_VELOCITY : radVelocity;
+    }
 
-        if(jumping){
-            // temporary thing I think 10:57am 08-12-2016
-            height += radAcceleration;
+
+    public void applyForce() {
+        if(moving) {
+            // Apply Acceleration
+            radVelocity += radAcceleration;
+            radLocation += radVelocity;
         }
     }
 
