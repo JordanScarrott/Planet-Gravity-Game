@@ -22,6 +22,9 @@ public class Player extends JPanel implements KeyListener {
     private boolean jumping = false;
     private int[] keys;
     private int accelerationtimer;
+    private int frameSize;
+    private boolean animationLand;
+    private boolean alive;
 
     public Player(MyVector location, int radius, int bounds,BufferedImage imgPlayer, int[] keys) {
         this.pLocation = location;
@@ -29,9 +32,11 @@ public class Player extends JPanel implements KeyListener {
         this.radius = radius;
         this.bounds = bounds;
         this.keys = keys;
+        alive = true;
         angle = randomAngle();
         acceleration = 0;
         accelerationtimer = 0;
+        animationLand = false;
     }
 
     public Player(float x, float y, int radius, int bounds, BufferedImage imgPlayer, int[] keys) {
@@ -44,11 +49,14 @@ public class Player extends JPanel implements KeyListener {
     public int getAngle(){
         return angle;
     }
+    public boolean getAlive(){
+        return alive;
+    }
     public int getAcceleration(){
         return acceleration;
     }
-    public void setRadius(int radius){
-        this.radius = radius;
+    public void setAlive(boolean alive){
+        this.alive = alive;
     }
     //Functions
     public void paint(Graphics g){
@@ -59,11 +67,24 @@ public class Player extends JPanel implements KeyListener {
         transform.rotate(Math.toRadians(angle), radius + height + bounds, radius + height + bounds) ;
         transform.rotate(Math.toRadians(-45), 21,21);
         animate();
-        if(!jumping)currentSpriteY = 0;
+        if(!jumping){
+            currentSpriteY = 0;
+            frameSize = 42;
+        }
         else currentSpriteY = 1;
 
+        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX* frameSize, currentSpriteY*frameSize, frameSize, frameSize), transform, this);
+        if(animationLand){
+            AffineTransform transform2 = new AffineTransform();
+            transform2.translate(pLocation.x - height - bounds + 15, pLocation.y - height- bounds + 15);
+            transform2.rotate(Math.toRadians(angle), radius + height + bounds-15, radius + height + bounds-15) ;
+            transform2.rotate(Math.toRadians(-45), 21,21);
+            g2d.drawImage(imgPlayer.getSubimage(currentSpriteX* 64, currentSpriteY+2*frameSize, frameSize, frameSize), transform2, this);
+            if(currentSpriteX == 3){
+                animationLand = false;
+            }
+        }
 
-        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX* 42, currentSpriteY*42, 42, 42), transform, this);
         //g.fillRect((int)(pLocation.x + radius + (radius + height + height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(int)(pLocation.y + radius + (radius + height + height/2 + bounds)*Math.sin(Math.toRadians(angle - 135))), 10, 10);
 
     }
@@ -98,15 +119,15 @@ public class Player extends JPanel implements KeyListener {
             angle += acceleration;
             if(accelerationtimer > 100){
                 if(planetID != 3){
-                    if (acceleration < 3) {
+                    if (acceleration < 1) {
                         acceleration++;
                     }
-                    if(acceleration > 3){
-                        acceleration-= 3;
+                    if(acceleration > 1){
+                        acceleration-= 1;
                     }
                 }else{
-                    if (acceleration < 4) {
-                        acceleration+= 3;
+                    if (acceleration <1) {
+                        acceleration+= 1;
                     }
                 }
                 accelerationtimer = 0;
@@ -130,6 +151,9 @@ public class Player extends JPanel implements KeyListener {
         bounds = pBounds;
         pLocation.x = planetX;
         pLocation.y = planetY;
+        currentSpriteX = 0;
+        currentSpriteY = 0;
+        animationLand = true;
         height = 0;
     }
     public void addKeyListener(JFrame frame) {

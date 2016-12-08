@@ -26,20 +26,22 @@ public class Game extends JPanel {
             i.paint(g);
         }
         for(Player i : players){
-            i.paint(g);
+            if(i.getAlive())i.paint(g);
         }
     }
 
     public void move() {
-        for(int i = 0; i < players.size(); i++){
-            players.get(i).move(planetID[i]);
-            if(players.get(i).getJumping()){
-                for(int j= 0; j < planets.size(); j++) {
-                    if(j != planetID[i])
-                        if(players.get(i).checkCollision(planets.get(j).getpLocation().x, planets.get(j).getpLocation().y, planets.get(j).getRadius(),planets.get(j).getBbounds())){
-                            planetID[i] = j;
-                            break;
-                        }
+        for(int i = 0; i < players.size(); i++) {
+            if (players.get(i).getAlive()) {
+                players.get(i).move(planetID[i]);
+                if (players.get(i).getJumping()) {
+                    for (int j = 0; j < planets.size(); j++) {
+                        if (j != planetID[i])
+                            if (players.get(i).checkCollision(planets.get(j).getpLocation().x, planets.get(j).getpLocation().y, planets.get(j).getRadius(), planets.get(j).getBbounds())) {
+                                planetID[i] = j;
+                                break;
+                            }
+                    }
                 }
             }
         }
@@ -52,28 +54,40 @@ public class Game extends JPanel {
         this.finished = finished;
     }
     public void collision() {
-        for(int i = 0; i < players.size()-1; i++) {
-            if (planetID[i] != -1){
-                if (planetID[i] == planetID[i + 1]) {
-                    if (players.get(i).getAngle() > players.get(i + 1).getAngle() - playerbounds && players.get(i).getAngle() < players.get(i + 1).getAngle() + playerbounds) {
-                        if (players.get(i).getAcceleration() > players.get(i + 1).getAcceleration()) {
-                            players.remove(i + 1);
-                            planetID[i+1] = -1;
-                            System.out.println("player " + (i + 2) + " was killed");
-                        } else {
-                            players.remove(i);
-                            planetID[i] = -1;
-                            System.out.println("player " + (i+1) + " was killed");
-                        }
+        for(int i = 0; i < players.size(); i++) {
+            for(int j = i+1; j < players.size(); j++) {
+                if (players.get(i).getAlive() && players.get(j).getAlive() && planetID[i] == planetID[j]) {
+                    if (players.get(i).getAngle() > players.get(j).getAngle() - playerbounds && players.get(i).getAngle() < players.get(j).getAngle() + playerbounds) {
+                        findSlowerPlayer(i, j);
+                        int x = checkIfWinner();
+                        if(x != -1)Winner(x);
                     }
                 }
             }
         }
     }
+    public void findSlowerPlayer(int i, int j){
+        if (players.get(i).getAcceleration() > players.get(j).getAcceleration())killPlayer(j);
+        else killPlayer(i);
+    }
+    public void killPlayer(int i){
+        players.get(i).setAlive(false);
+        System.out.println("player " + (i+1) + " was killed");
+    }
+    public int checkIfWinner(){
+        int x = 0;
+        int j = 0;
+        for(int i = 0; i < players.size(); i++){
+            if(!players.get(i).getAlive())x++;
+            else j = i;
+        }
+        if(x == 3)return j;
+        else return -1;
+    }
     public void addPlayers(JFrame frame){
         for(int i = 0; i < 4; i++) {
             randomSpawn(i);
-            players.add(new Player(planets.get(planetID[i]).getpLocation().x, planets.get(planetID[i]).getpLocation().y, (int) planets.get(planetID[i]).getRadius(), planets.get(planetID[i]).getBbounds(), ResourceLoader.loadImage("animate.png"), keys[i]));
+            players.add(new Player(planets.get(planetID[i]).getpLocation().x, planets.get(planetID[i]).getpLocation().y, (int) planets.get(planetID[i]).getRadius(), planets.get(planetID[i]).getBbounds(), ResourceLoader.loadImage("animate2.png"), keys[i]));
         }
         setPlayerKeys();
         for(int i = 0; i < players.size(); i++){
@@ -92,11 +106,11 @@ public class Game extends JPanel {
         keys[1][0] = KeyEvent.VK_O; //Move
         keys[1][1] = KeyEvent.VK_P; //Jump
         //Player 3
-        keys[2][0] = KeyEvent.VK_N; //Move
-        keys[2][1] = KeyEvent.VK_M; //Jump
+        keys[2][0] = KeyEvent.VK_C; //Move
+        keys[2][1] = KeyEvent.VK_V; //Jump
         //Player 4
-        keys[3][0] = KeyEvent.VK_C; //Move
-        keys[3][1] = KeyEvent.VK_V; //Jump
+        keys[3][0] = KeyEvent.VK_N; //Move
+        keys[3][1] = KeyEvent.VK_M; //Jump
     }
     public void generatePlanets(){
         planets.add(new Planet(56, 74, 100, 6, ResourceLoader.loadImage("planets/orangeplanet.png")));
@@ -105,7 +119,9 @@ public class Game extends JPanel {
         planets.add(new Planet(250, 350, 50,14, ResourceLoader.loadImage("planets/redplanet.png")));
     }
     public void Winner(int playerID){
-        System.out.println("Winner is " + playerID); //Do winning stuff here
+        System.out.println("Winner is " + (playerID+1)); //Do winning stuff here
+        try{Thread.sleep(1000);}
+        catch(Exception e){}
         finished = true;
     }
 }
