@@ -35,6 +35,7 @@ public class Game extends JPanel {
             if (players.get(i).getAlive()) {
                 players.get(i).move(planetID[i]);
                 if (players.get(i).getJumping()) {
+                    if(checkPlayerInsideGrid(i))killPlayer(i);
                     for (int j = 0; j < planets.size(); j++) {
                         if (j != planetID[i])
                             if (players.get(i).checkCollision(planets.get(j).getpLocation().x, planets.get(j).getpLocation().y, planets.get(j).getRadius(), planets.get(j).getBbounds())) {
@@ -56,15 +57,19 @@ public class Game extends JPanel {
     public void collision() {
         for(int i = 0; i < players.size(); i++) {
             for(int j = i+1; j < players.size(); j++) {
-                if (players.get(i).getAlive() && players.get(j).getAlive() && planetID[i] == planetID[j]) {
-                    if (players.get(i).getAngle() > players.get(j).getAngle() - playerbounds && players.get(i).getAngle() < players.get(j).getAngle() + playerbounds) {
+                if (players.get(i).getAlive() && players.get(j).getAlive() && planetID[i] == planetID[j] && checkPlayerSpriteCollision(i, j)) {
                         findSlowerPlayer(i, j);
-                        int x = checkIfWinner();
-                        if(x != -1)Winner(x);
-                    }
                 }
             }
         }
+    }
+    public boolean checkPlayerInsideGrid(int i){
+        if(players.get(i).findGridX() < 0 || players.get(i).findGridX() > 800 || players.get(i).findGridY() < 0 || players.get(i).findGridY() > 600)return true;
+        else return false;
+    }
+    public boolean checkPlayerSpriteCollision(int i, int j){
+        if(players.get(i).getAngle() > players.get(j).getAngle() - playerbounds && players.get(i).getAngle() < players.get(j).getAngle() + playerbounds)return true;
+        else return false;
     }
     public void findSlowerPlayer(int i, int j){
         if (players.get(i).getAcceleration() > players.get(j).getAcceleration())killPlayer(j);
@@ -73,6 +78,8 @@ public class Game extends JPanel {
     public void killPlayer(int i){
         players.get(i).setAlive(false);
         System.out.println("player " + (i+1) + " was killed");
+        int x = checkIfWinner();
+        if(x != -1)Winner(x);
     }
     public int checkIfWinner(){
         int x = 0;
@@ -81,22 +88,31 @@ public class Game extends JPanel {
             if(!players.get(i).getAlive())x++;
             else j = i;
         }
-        if(x == 3)return j;
+        if(x == players.size()-1)return j;
         else return -1;
     }
     public void addPlayers(JFrame frame){
         for(int i = 0; i < 4; i++) {
             randomSpawn(i);
             players.add(new Player(planets.get(planetID[i]).getpLocation().x, planets.get(planetID[i]).getpLocation().y, (int) planets.get(planetID[i]).getRadius(), planets.get(planetID[i]).getBbounds(), ResourceLoader.loadImage("animate2.png"), keys[i]));
+            players.get(i).addKeyListener(frame);
         }
         setPlayerKeys();
-        for(int i = 0; i < players.size(); i++){
-            players.get(i).addKeyListener(frame); //Enables use of Keyboard inputs for players
-        }
     }
     public void randomSpawn(int i){ //Random a planet for player to spawn on
-        planetID[i] = (int)(Math.random()*planets.size());
+
+            do {
+                planetID[i] = (int)(Math.random()*planets.size());
+               } while (!stopPlayersSpawningTooClose(i));
         //System.out.println((int)(Math.random()*planets.size()));     //printing out values in menu screen, Investigate this
+    }
+    public boolean stopPlayersSpawningTooClose(int i){//Return false if players are too close
+        for(int j = 0; j < i; j++){
+            if(planetID[j] == planetID[i]) {
+            return false;
+            }
+        }
+        return true;
     }
     public void setPlayerKeys(){
         //Player1

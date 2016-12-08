@@ -58,6 +58,9 @@ public class Player extends JPanel implements KeyListener {
     public void setAlive(boolean alive){
         this.alive = alive;
     }
+    public void setAngle(int angle){
+        this.angle = angle;
+    }
     //Functions
     public void paint(Graphics g){
         super.paint(g);
@@ -107,12 +110,12 @@ public class Player extends JPanel implements KeyListener {
             }
         }
     }
+    public int randomAngle(){
+        return (int)(Math.random()*360);
+    }
     public void fixAngle(){
         if(angle> 360)angle = 0;
         if(angle < 0)angle = 360;
-    }
-    public int randomAngle(){
-        return (int)(Math.random()*360);
     }
     public void accelerate(int planetID){ //very retarded basic acceleration
         if (moving) {
@@ -136,15 +139,21 @@ public class Player extends JPanel implements KeyListener {
         }
     }
     public boolean checkCollision(float planetX, float planetY, float pRadius, int pBounds){
-        if(MyVector.distanceSq(new MyVector((float)(pLocation.x + radius + (radius + height+ height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(float) (pLocation.y + radius + (radius + height + height/2+ bounds)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(planetX + pRadius, planetY + pRadius))<=(21 + pRadius)*(21+pRadius)){
+        if(MyVector.distanceSq(new MyVector((float)findGridX(),(float) findGridY()), new MyVector(planetX + pRadius, planetY + pRadius))<=(21 + pRadius)*(21+pRadius)){
             land(planetX, planetY, pRadius, pBounds);
             return true;
         }
         return false;
     }
+    public double findGridX(){
+        return pLocation.x + radius + (radius + height+ height/2 + bounds)*Math.cos(Math.toRadians(angle - 135));
+    }
+    public double findGridY(){
+        return pLocation.y + radius + (radius + height + height/2+ bounds)*Math.sin(Math.toRadians(angle - 135));
+    }
     public void land(float planetX, float planetY, float pRadius, int pBounds){
         //Calculate new angle
-        angle = (int) (Math.atan2((int) (pLocation.y + radius + (radius + height + height/2 + bounds)*Math.sin(Math.toRadians(angle - 135)))-planetY-pRadius, (int) (pLocation.x + radius + (radius + height + height/2+ bounds)*Math.cos(Math.toRadians(angle - 135)))-planetX - pRadius)*180/Math.PI) + 135;
+        angle = (int) (Math.atan2((int) findGridY()-planetY-pRadius, (int) findGridX()-planetX - pRadius)*180/Math.PI) + 135;
         jumping = false;
         moving = true;
         radius = (int)pRadius;
