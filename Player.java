@@ -74,9 +74,9 @@ public class Player extends JPanel implements KeyListener {
         AffineTransform transform = new AffineTransform();
         transform.translate(pLocation.x - height - bounds, pLocation.y - height- bounds);
         transform.rotate(radLocation / relativePlanet.getPerimeter(), radius + height + bounds, radius + height + bounds) ;
-        if (relativePlanet.getRadius() == 150) {
-            System.out.println(radLocation / relativePlanet.getPerimeter());
-        }
+//         if (relativePlanet.getRadius() == 150) {
+//             System.out.println(radLocation / relativePlanet.getPerimeter());
+//         }
         transform.rotate(Math.toRadians(-45), 21, 21);
 
         animate();
