@@ -75,4 +75,12 @@ public class Planet extends JPanel {
     public void setPerimeter(float perimeter) {
         this.perimeter = perimeter;
     }
+
+    public float getPlanetaryAcceleration() {
+        return planetaryAcceleration;
+    }
+
+    public void setPlanetaryAcceleration(float planetaryAcceleration) {
+        this.planetaryAcceleration = planetaryAcceleration;
+    }
 }
