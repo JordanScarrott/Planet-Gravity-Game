@@ -7,12 +7,12 @@ public class Planet extends JPanel {
     /**
      * Maximum velocity of a player on this planet
      * */
-    public static final float MAX_VELOCITY = 1;
+    public static final float MAX_VELOCITY = 35;
 
     /**
      * Maximum acceleration that can be applied to a player each frame
      * */
-    public static final float MAX_ACCELERATION = 2;
+    public static final float MAX_ACCELERATION = 1.5f;
 
     private BufferedImage imgPlanet = null;
     private MyVector pLocation;
@@ -33,7 +33,7 @@ public class Planet extends JPanel {
         center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
         perimeter = 2 * (float)Math.PI * this.radius;
         // Scale the player's acceleration inversely to the planet's radius
-        planetaryAcceleration = MAX_ACCELERATION * (1 - this.radius / (PlanetGenerator.MAX_RADIUS + 10));
+        planetaryAcceleration = MAX_ACCELERATION * (float)(1 - ((double)this.radius / (PlanetGenerator.MAX_RADIUS + 10f)));
     }
 
     public Planet(float x, float y, float radius, int bounds, BufferedImage imgPlanet) {
