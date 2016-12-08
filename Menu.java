@@ -4,9 +4,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Menu extends JPanel implements KeyListener{
-
+    ArrayList<Planet> planets = new ArrayList<Planet>();
     private boolean finished;
     private int cursY = 110;
     private BufferedImage[] playerSprites = new BufferedImage[4];
@@ -92,6 +93,7 @@ public class Menu extends JPanel implements KeyListener{
                     ResourceLoader.loadAudio("selectSound.wav");
                     lastTime = currentTime;
                 }
+                planets = LevelCreator.generateLevel((cursY-110)/150);
                 finished = true;
             }
         }
@@ -101,6 +103,9 @@ public class Menu extends JPanel implements KeyListener{
     }
     public boolean getFinished(){
         return finished;
+    }
+    public ArrayList<Planet> getPlanets(){
+        return planets;
     }
     public void setFinished(boolean finished){
         this.finished = finished;

@@ -12,10 +12,10 @@ public class Game extends JPanel {
     private int[][] keys = new int[4][2]; //Keyboard inputs for player 1
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
-    public Game(JFrame frame) {
+    public Game(JFrame frame, ArrayList<Planet> planets) {
+        this.planets = planets;
         imgBackground = ResourceLoader.loadImage("background.png");
         finished = false;
-        generatePlanets();
         addPlayers(frame);
     }
 
@@ -57,7 +57,7 @@ public class Game extends JPanel {
     public void collision() {
         for(int i = 0; i < players.size(); i++) {
             for(int j = i+1; j < players.size(); j++) {
-                if (players.get(i).getAlive() && players.get(j).getAlive() && planetID[i] == planetID[j] && checkPlayerSpriteCollision(i, j)) {
+                if (players.get(i).getAlive() && players.get(j).getAlive() && checkPlayerSpriteCollision(i, j)) {
                         findSlowerPlayer(i, j);
                 }
             }
@@ -68,7 +68,7 @@ public class Game extends JPanel {
         else return false;
     }
     public boolean checkPlayerSpriteCollision(int i, int j){
-        if(players.get(i).getAngle() > players.get(j).getAngle() - playerbounds && players.get(i).getAngle() < players.get(j).getAngle() + playerbounds)return true;
+        if(MyVector.distanceSq(new MyVector((float)players.get(i).findGridX(),(float) players.get(i).findGridY()), new MyVector((float)players.get(j).findGridX(),(float) players.get(j).findGridY()))< 42*42)return true;
         else return false;
     }
     public void findSlowerPlayer(int i, int j){
@@ -127,12 +127,6 @@ public class Game extends JPanel {
         //Player 4
         keys[3][0] = KeyEvent.VK_N; //Move
         keys[3][1] = KeyEvent.VK_M; //Jump
-    }
-    public void generatePlanets(){
-        planets.add(new Planet(56, 74, 100, 6, ResourceLoader.loadImage("planets/orangeplanet.png")));
-        planets.add(new Planet(525, 356, 50, 20, ResourceLoader.loadImage("planets/testpurpleplanet.png")));
-        planets.add(new Planet(550, 88, 75, 10, ResourceLoader.loadImage("planets/greenplanet.png")));
-        planets.add(new Planet(250, 350, 50,14, ResourceLoader.loadImage("planets/redplanet.png")));
     }
     public void Winner(int playerID){
         System.out.println("Winner is " + (playerID+1)); //Do winning stuff here

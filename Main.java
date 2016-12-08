@@ -1,7 +1,5 @@
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+
 
 public class Main {
     static JFrame frame = new JFrame();
@@ -17,14 +15,14 @@ public class Main {
     }
 
     public static void runnit() throws InterruptedException {
-         Menu menu = new Menu(frame);
-         Game game = new Game(frame);
+         Menu menu;
+         Game game;
         ResourceLoader.loadAudio("bgm.wav");
         //Loop
         while(true) {
             menu = new Menu(frame);
             Menu(frame, menu);
-            game = new Game(frame);
+            game = new Game(frame, menu.getPlanets());
             Game(frame, game);
         }
     }
