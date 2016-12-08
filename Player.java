@@ -29,7 +29,7 @@ public class Player extends JPanel implements KeyListener {
     private float height;
     private float radius;
     private int bounds;
-    private float angle;
+    private double angle;
     private boolean moving = false;
     private boolean jumping = false;
     private int[] keys;
@@ -69,11 +69,16 @@ public class Player extends JPanel implements KeyListener {
 
     public void paint(Graphics g){
         super.paint(g);
+        angle = Math.toDegrees(radLocation / relativePlanet.getPerimeter());
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
         transform.translate(pLocation.x - height - bounds, pLocation.y - height- bounds);
         transform.rotate(radLocation / relativePlanet.getPerimeter(), radius + height + bounds, radius + height + bounds) ;
+        if (relativePlanet.getRadius() == 150) {
+            System.out.println(radLocation / relativePlanet.getPerimeter());
+        }
         transform.rotate(Math.toRadians(-45), 21, 21);
+
         animate();
         if(!jumping)currentSpriteY = 0;
         else currentSpriteY = 1;
@@ -84,7 +89,7 @@ public class Player extends JPanel implements KeyListener {
 
     }
 
-    public void move(int planetID) {
+    public void move() {
         update();
         if(jumping){
             // temporary thing I think 10:57am 08-12-2016
@@ -93,7 +98,7 @@ public class Player extends JPanel implements KeyListener {
     }
 
     public void update() {
-//        clampRadLocation();
+        clampRadLocation();
         clampVelocity();
         applyForce();
     }
@@ -102,7 +107,7 @@ public class Player extends JPanel implements KeyListener {
      * Keeps the radLocation between 0 and 2.PI.r
      * */
     public void clampRadLocation() {
-        radLocation %= relativePlanet.getPerimeter();
+        radLocation %= (relativePlanet.getPerimeter() * 2 * Math.PI);
     }
 
     /**
@@ -140,14 +145,19 @@ public class Player extends JPanel implements KeyListener {
 
 
     public boolean checkCollision(Planet planet){
-        if(MyVector.distanceSq(new MyVector((float)(pLocation.x + radius + (radius + height+ height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(float) (pLocation.y + radius + (radius + height + height/2+ bounds)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(planet.getpLocation().x + planet.getRadius(), planet.getpLocation().y + planet.getRadius()))<=(21 + planet.getRadius())*(21+planet.getRadius())){
+        /*if(MyVector.distanceSq(new MyVector((float)(pLocation.x + radius + (radius + height+ height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(float) (pLocation.y + radius + (radius + height + height/2+ bounds)*Math.sin(Math.toRadians(angle - 135)))), new MyVector(planet.getpLocation().x + planet.getRadius(), planet.getpLocation().y + planet.getRadius())) <= (21 + planet.getRadius())*(21 + planet.getRadius())){
             land(planet.getpLocation().x, planet.getpLocation().y, planet.getRadius(), planet.getBbounds());
+            return true;
+        }*/
+        if (MyVector.distanceSq(MyVector.add(this.getpLocation(), new MyVector(21, 21)), planet.getCenter()) < (21 + planet.getRadius()) * (21 + planet.getRadius())) {
+//            System.out.println("askdfhalksjdhflkjashdflkjaslkdfh");
+            relativePlanet = planet;
             return true;
         }
         return false;
     }
 
-    public void land(float planetX, float planetY, float pRadius, int pBounds){
+    public void land(float planetX, float planetY, float pRadius, int pBounds) {
         //Calculate new angle
         angle = (int) (Math.atan2((int) (pLocation.y + radius + (radius + height + height/2 + bounds)*Math.sin(Math.toRadians(angle - 135)))-planetY-pRadius, (int) (pLocation.x + radius + (radius + height + height/2+ bounds)*Math.cos(Math.toRadians(angle - 135)))-planetX - pRadius)*180/Math.PI) + 135;
         jumping = false;
@@ -201,7 +211,7 @@ public class Player extends JPanel implements KeyListener {
         this.pLocation = pLocation;
     }
 
-    public float getAngle(){
+    public double getAngle(){
         return angle;
     }
 
