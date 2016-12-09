@@ -10,30 +10,26 @@ public class Planet extends JPanel {
     private float radius;
     private int bounds;
     private float perimeter;
-    // Acceleration applied to players on a planet
+
+    public static final float MAX_VELOCITY = 0.8f;
+    public static final float MAX_ACCELERATION = 0.001f;
+
     private float planetaryAcceleration;
 
     // Constructor
-    public Planet(MyVector location, float radius, int bounds, BufferedImage imgPlanet) {
+    public Planet(MyVector location, float radius,int bounds, BufferedImage imgPlanet) {
         this.pLocation = location;
         this.radius = radius;
         this.bounds = bounds;
         this.imgPlanet = imgPlanet;
-        // The center of the image
-        center = new MyVector(imgPlanet.getWidth() / 2, imgPlanet.getHeight() / 2);
         perimeter = 2 * (float)Math.PI * this.radius;
-        // Scale the player's acceleration inversely to the planet's radius
-        planetaryAcceleration = 5 * (1 - this.radius / (PlanetGenerator.MAX_RADIUS + 10));
-    }
 
+        planetaryAcceleration = MAX_ACCELERATION * (1 - (this.radius / (250 + 10)));
+    }
     public Planet(float x, float y, float radius, int bounds, BufferedImage imgPlanet) {
-        this(new MyVector(x, y), radius, bounds, imgPlanet);
+        this(new MyVector(x, y), radius,bounds, imgPlanet);
     }
 
-    public void paint(Graphics g) {
-        super.paint(g);
-        g.drawImage(imgPlanet, (int) pLocation.x, (int) pLocation.y, null);
-    }
 
     // Getters and Setters
     public MyVector getpLocation() {
@@ -47,13 +43,20 @@ public class Planet extends JPanel {
     public float getRadius() {
         return radius;
     }
+    public int getBbounds() {
+        return bounds;
+    }
+
+    public float getPlanetaryAcceleration() {
+        return planetaryAcceleration;
+    }
+
+    public float getPerimeter() {
+        return perimeter;
+    }
 
     public void setRadius(float radius) {
         this.radius = radius;
-    }
-
-    public int getBbounds() {
-        return bounds;
     }
 
     public BufferedImage getImgPlanet() {
@@ -68,19 +71,9 @@ public class Planet extends JPanel {
         return center;
     }
 
-    public float getPerimeter() {
-        return perimeter;
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.drawImage(imgPlanet, (int) pLocation.x - (int)radius, (int) pLocation.y - (int)radius, null);
     }
 
-    public void setPerimeter(float perimeter) {
-        this.perimeter = perimeter;
-    }
-
-    public float getPlanetaryAcceleration() {
-        return planetaryAcceleration;
-    }
-
-    public void setPlanetaryAcceleration(float planetaryAcceleration) {
-        this.planetaryAcceleration = planetaryAcceleration;
-    }
 }

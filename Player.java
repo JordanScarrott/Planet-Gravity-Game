@@ -6,47 +6,67 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Player extends JPanel implements KeyListener {
+
+    public static final int JUMP_VELOCITY = 1;
+
     private BufferedImage imgPlayer = null;
     private MyVector pLocation;
+    private MyVector pVelocity;
     private MyVector center;
+    private Planet relativePlanet;
+
+    private float radLocation;
+    private float radVelocity;
+    private float radAcceleration;
+
     private int currentSpriteX;
+    private int constcurrentSpriteX;
     private int currentSpriteY;
+    private int constcurrentSpriteY;
     private long lastTime = 0;
     private double delay = 100;
     private float height;
     private int acceleration;
     private int radius;
     private int bounds;
-    private int angle;
+    private float angle;
     private boolean moving = false;
     private boolean jumping = false;
     private int[] keys;
     private int accelerationtimer;
-    private int frameSize;
+    private int frameSize = 42;
     private boolean animationLand;
     private boolean alive;
 
     public Player(MyVector location, int radius, int bounds,BufferedImage imgPlayer, int[] keys) {
         this.pLocation = location;
+        pVelocity = new MyVector();
+        this.center = new MyVector(location.x , location.y);
         this.imgPlayer = imgPlayer;
         this.radius = radius;
         this.bounds = bounds;
         this.keys = keys;
         alive = true;
         angle = randomAngle();
+        this.pLocation.add((radius+21) * (float)Math.cos(angle), (radius+21) * (float)Math.sin(angle));
         acceleration = 0;
         accelerationtimer = 0;
         animationLand = false;
     }
+    public Player(Planet relPla, BufferedImage imgPlayer, int[] keys){
+        this(relPla.getpLocation().copy()
+                , (int)relPla.getRadius() // <-- BUGSS!!!!
+                , relPla.getBbounds()
+                , imgPlayer
+                , keys);
+        this.relativePlanet = relPla;
 
-    public Player(float x, float y, int radius, int bounds, BufferedImage imgPlayer, int[] keys) {
-        this(new MyVector(x, y), radius,bounds, imgPlayer, keys);
     }
     //Getters and Setters
     public boolean getJumping() {
         return jumping;
     }
-    public int getAngle(){
+    public float getAngle(){
         return angle;
     }
     public boolean getAlive(){
@@ -66,36 +86,24 @@ public class Player extends JPanel implements KeyListener {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
-        transform.translate(pLocation.x - height - bounds, pLocation.y - height- bounds);
-        transform.rotate(Math.toRadians(angle), radius + height + bounds, radius + height + bounds) ;
-        transform.rotate(Math.toRadians(-45), 21,21);
-        animate();
-        if(!jumping){
-            currentSpriteY = 0;
-            frameSize = 42;
+        transform.translate(pLocation.x-21, pLocation.y-21);
+//        System.out.println(angle);
+        transform.rotate(angle + Math.PI/2, 21,21);
+        if(moving || jumping) {
+            animate();
         }
-        else currentSpriteY = 1;
-
-        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX* frameSize, currentSpriteY*frameSize, frameSize, frameSize), transform, this);
-        if(animationLand){
-            AffineTransform transform2 = new AffineTransform();
-            transform2.translate(pLocation.x - height - bounds + 15, pLocation.y - height- bounds + 15);
-            transform2.rotate(Math.toRadians(angle), radius + height + bounds-15, radius + height + bounds-15) ;
-            transform2.rotate(Math.toRadians(-45), 21,21);
-            g2d.drawImage(imgPlayer.getSubimage(currentSpriteX* 64, currentSpriteY+2*frameSize, frameSize, frameSize), transform2, this);
-            if(currentSpriteX == 3){
-                animationLand = false;
-            }
-        }
+        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX*frameSize,currentSpriteY*frameSize, frameSize, frameSize), transform, this);
 
         //g.fillRect((int)(pLocation.x + radius + (radius + height + height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(int)(pLocation.y + radius + (radius + height + height/2 + bounds)*Math.sin(Math.toRadians(angle - 135))), 10, 10);
 
     }
-    public void move(int planetID) {
-        fixAngle(); //so the angles is always between 0 and 360
-        accelerate(planetID);
+    public void move() {
+//        System.out.println(radVelocity);
+        update();
         if(jumping){
-            height+=acceleration;
+            pVelocity = MyVector.sub(pLocation, relativePlanet.getpLocation()).normalize();
+            pVelocity.mult(JUMP_VELOCITY);
+            pLocation.add(pVelocity);
         }
     }
     public void animate(){
@@ -110,56 +118,60 @@ public class Player extends JPanel implements KeyListener {
             }
         }
     }
-    public int randomAngle(){
-        return (int)(Math.random()*360);
+    public void update(){
+        applyForce();
+        clampRadLocation();
+        clampRadVelocity();
+
+        MyVector temp = MyVector.sub(pLocation, center);
+        temp.rotate(computeRadianAngle());
+        temp.add(center);
+        pLocation.set(temp.x, temp.y);
+
+        angle += computeRadianAngle();
+        // Reset radLocation for the next rotation
+        radLocation = 0;
     }
-    public void fixAngle(){
-        if(angle> 360)angle = 0;
-        if(angle < 0)angle = 360;
+    public float computeRadianAngle(){
+        return (radLocation * (float)Math.PI * 2) / relativePlanet.getPerimeter();
     }
-    public void accelerate(int planetID){ //very retarded basic acceleration
-        if (moving) {
-            angle += acceleration;
-            if(accelerationtimer > 100){
-                if(planetID != 3){
-                    if (acceleration < 1) {
-                        acceleration++;
-                    }
-                    if(acceleration > 1){
-                        acceleration-= 1;
-                    }
-                }else{
-                    if (acceleration <1) {
-                        acceleration+= 1;
-                    }
-                }
-                accelerationtimer = 0;
-            }
-            accelerationtimer++;
+    public void clampRadLocation(){
+        radLocation %= (relativePlanet.getPerimeter()*2*Math.PI);
+    }
+    public void clampRadVelocity(){
+        if(radVelocity > Planet.MAX_VELOCITY) radVelocity = Planet.MAX_VELOCITY;
+    }
+    public void applyForce(){
+        if(moving){
+            //Apply Acceleration;
+            radVelocity += radAcceleration;
+            radLocation += radVelocity;
         }
     }
-    public boolean checkCollision(float planetX, float planetY, float pRadius, int pBounds){
-        if(MyVector.distanceSq(new MyVector((float)findGridX(),(float) findGridY()), new MyVector(planetX + pRadius, planetY + pRadius))<=(21 + pRadius)*(21+pRadius)){
-            land(planetX, planetY, pRadius, pBounds);
+    public float randomAngle(){
+        return (float)(Math.random()*2*Math.PI);
+    }
+
+    public boolean checkCollision(Planet planet){
+        if (MyVector.distanceSq(pLocation, planet.getpLocation()) < (21 + planet.getRadius()) * (21 + planet.getRadius())) {
+            land(planet);
             return true;
         }
         return false;
     }
-    public double findGridX(){
-        return pLocation.x + radius + (radius + height+ height/2 + bounds)*Math.cos(Math.toRadians(angle - 135));
+    public float findGridX(){
+        return (float)(pLocation.x + (radius)*Math.cos(Math.toRadians(angle)));
     }
-    public double findGridY(){
-        return pLocation.y + radius + (radius + height + height/2+ bounds)*Math.sin(Math.toRadians(angle - 135));
+    public float findGridY(){
+        return (float)(pLocation.y + (radius)*Math.sin(Math.toRadians(angle)));
     }
-    public void land(float planetX, float planetY, float pRadius, int pBounds){
+    public void land(Planet planet){
         //Calculate new angle
-        angle = (int) (Math.atan2((int) findGridY()-planetY-pRadius, (int) findGridX()-planetX - pRadius)*180/Math.PI) + 135;
+        this.relativePlanet = planet;
+        this.center.set(relativePlanet.getpLocation());
+        angle = (float)Math.toRadians(MyVector.angle(pLocation, relativePlanet.getpLocation()));
         jumping = false;
         moving = true;
-        radius = (int)pRadius;
-        bounds = pBounds;
-        pLocation.x = planetX;
-        pLocation.y = planetY;
         currentSpriteX = 0;
         currentSpriteY = 0;
         animationLand = true;
@@ -177,13 +189,14 @@ public class Player extends JPanel implements KeyListener {
         if(!jumping) {
             if (keyCode == keys[0]) {
                 moving = true;
-                if(acceleration == 0)acceleration++; //retarded initial acceleration
+                if(acceleration == 0)radAcceleration = relativePlanet.getPlanetaryAcceleration();
             }
         }
         if(moving) {
             if (keyCode == keys[1]) {
                 moving = false;
                 jumping = true;
+                currentSpriteY = 1;
             }
         }
     }

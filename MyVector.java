@@ -1,6 +1,4 @@
 import com.sun.javafx.geom.Vec2f;
-import java.util.Random;
-
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -131,25 +129,6 @@ public class MyVector extends Vec2f {
      */
     public static MyVector rotateMin90(MyVector myVector) {
         return new MyVector(myVector.y, -myVector.x);
-    }
-
-    /**
-     * Returns myVector rotated by an angle of radAngle radians
-     * @param myVector the MyVector to rotate
-     * @param radAngle angle in radians
-     * @return a rotated MyVector
-     * */
-    public static MyVector rotate(MyVector myVector, float radAngle) {
-        return new MyVector(myVector.x * (float)cos(radAngle) - myVector.y * (float)sin(radAngle)
-                , myVector.x * (float)sin(radAngle) + myVector.y * (float)cos(radAngle));
-    }
-
-    /**
-     * Rotate the MyVector represented by this instance
-     * @param radAngle angle in radians
-     * */
-    public void rotate(float radAngle) {
-        this.set(rotate(this, radAngle));
     }
 
     /**
@@ -333,27 +312,18 @@ public class MyVector extends Vec2f {
 
     /**
      * Returns a random MyVector
-     * @return a random MyVector of with components ranging from 0 to 1
+     * @param lowerBound the lowest x or y value that can be returned
+     * @param upperBound the highest x or y value that can be returned
+     * @return a random MyVector of Real numbers
      * */
-    public static MyVector randomMyVector() {
+    /*public static MyVector randomMyVector(int lowerBound, int upperBound) {
         Random rand = new Random();
-
-        // Choose random floats between 0 and 1
-        return new MyVector(rand.nextFloat(), rand.nextFloat());
-    }
-
-    /**
-    * Multiplies the x and y components of the MyVector represented by
-    * this instance by the specified x and y variables
-    * @param x the nuymber by which to nultiply the x component of MyVector
-    *   represented by this instance
-    * @param y the nuymber by which to nultiply the y component of MyVector
-    *   represented by this instance
-    */
-    public void respectiveMult(float x, float y) {
-        this.x *= x;
-        this.y *= y;
-    }
+        float x = rand.nextInt(upperBound - lowerBound);
+        x = x > 0 ? x + lowerBound : -x + lowerBound;
+        float y = rand.nextInt(upperBound - lowerBound);
+        y = y > 0 ? y + lowerBound : -y + lowerBound;
+        return new MyVector(x, y);
+    }*/
 
     /**
      * Computes the angle (in degrees) between this core.MyVector and
@@ -389,6 +359,25 @@ public class MyVector extends Vec2f {
 
         this.x = newX;
         this.y = newY;
+    }
+
+    /**
+     * Returns myVector rotated by an angle of radAngle radians
+     * @param myVector the MyVector to rotate
+     * @param radAngle angle in radians
+     * @return a rotated MyVector
+     * */
+    public static MyVector rotate(MyVector myVector, float radAngle) {
+        return new MyVector(myVector.x * (float)cos(radAngle) - myVector.y * (float)sin(radAngle)
+                , myVector.x * (float)sin(radAngle) + myVector.y * (float)cos(radAngle));
+    }
+
+    /**
+     * Rotate the MyVector represented by this instance
+     * @param radAngle angle in radians
+     * */
+    public void rotate(float radAngle) {
+        this.set(rotate(this, radAngle));
     }
 
     /**

@@ -33,12 +33,12 @@ public class Game extends JPanel {
     public void move() {
         for(int i = 0; i < players.size(); i++) {
             if (players.get(i).getAlive()) {
-                players.get(i).move(planetID[i]);
+                players.get(i).move();
                 if (players.get(i).getJumping()) {
                     if(checkPlayerInsideGrid(i))killPlayer(i);
                     for (int j = 0; j < planets.size(); j++) {
                         if (j != planetID[i])
-                            if (players.get(i).checkCollision(planets.get(j).getpLocation().x, planets.get(j).getpLocation().y, planets.get(j).getRadius(), planets.get(j).getBbounds())) {
+                            if (players.get(i).checkCollision(planets.get(j))) {
                                 planetID[i] = j;
                                 break;
                             }
@@ -64,11 +64,14 @@ public class Game extends JPanel {
         }
     }
     public boolean checkPlayerInsideGrid(int i){
-        if(players.get(i).findGridX() < 0 || players.get(i).findGridX() > 800 || players.get(i).findGridY() < 0 || players.get(i).findGridY() > 600)return true;
+        if(players.get(i).getpLocation().x + 21 < 0
+                || players.get(i).getpLocation().x - 21 > 800
+                || players.get(i).getpLocation().y + 21 < 0
+                || players.get(i).getpLocation().y + 21 > 600)return true;
         else return false;
     }
     public boolean checkPlayerSpriteCollision(int i, int j){
-        if(MyVector.distanceSq(new MyVector((float)players.get(i).findGridX(),(float) players.get(i).findGridY()), new MyVector((float)players.get(j).findGridX(),(float) players.get(j).findGridY()))< 42*42)return true;
+        if(MyVector.distanceSq(players.get(i).getpLocation(), players.get(j).getpLocation())< 42*42)return true;
         else return false;
     }
     public void findSlowerPlayer(int i, int j){
@@ -94,7 +97,7 @@ public class Game extends JPanel {
     public void addPlayers(JFrame frame){
         for(int i = 0; i < 4; i++) {
             randomSpawn(i);
-            players.add(new Player(planets.get(planetID[i]).getpLocation().x, planets.get(planetID[i]).getpLocation().y, (int) planets.get(planetID[i]).getRadius(), planets.get(planetID[i]).getBbounds(), ResourceLoader.loadImage("animate2.png"), keys[i]));
+            players.add(new Player(planets.get(planetID[i]), ResourceLoader.loadImage("animate2.png"), keys[i]));
             players.get(i).addKeyListener(frame);
         }
         setPlayerKeys();
