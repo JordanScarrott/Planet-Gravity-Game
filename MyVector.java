@@ -1,6 +1,9 @@
 import com.sun.javafx.geom.Vec2f;
 import java.util.Random;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+
 /**
  * A 2-dimensional, single-precision, floating-point vector with operator methods
  *
@@ -128,6 +131,17 @@ public class MyVector extends Vec2f {
      */
     public static MyVector rotateMin90(MyVector myVector) {
         return new MyVector(myVector.y, -myVector.x);
+    }
+
+    /**
+     * Returns myVector rotated by an angle of radAngle radians
+     * @param myVector the MyVector to rotate
+     * @param radAngle angle in radians
+     * @return a rotated MyVector
+     * */
+    public static MyVector rotate(MyVector myVector, float radAngle) {
+        return new MyVector(myVector.x * (float)cos(radAngle) - myVector.y * (float)sin(radAngle)
+                , myVector.x * (float)sin(radAngle) + myVector.y * (float)cos(radAngle));
     }
 
     /**
