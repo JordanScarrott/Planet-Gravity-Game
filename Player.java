@@ -20,43 +20,33 @@ public class Player extends JPanel implements KeyListener {
     private float radAcceleration;
 
     private int currentSpriteX;
-    private int constcurrentSpriteX;
     private int currentSpriteY;
-    private int constcurrentSpriteY;
     private long lastTime = 0;
     private double delay = 100;
-    private float height;
-    private int acceleration;
     private int radius;
-    private int bounds;
     private float angle;
     private boolean moving = false;
     private boolean jumping = false;
     private int[] keys;
-    private int accelerationtimer;
     private int frameSize = 42;
     private boolean animationLand;
     private boolean alive;
 
-    public Player(MyVector location, int radius, int bounds,BufferedImage imgPlayer, int[] keys) {
+    public Player(MyVector location, int radius, BufferedImage imgPlayer, int[] keys) {
         this.pLocation = location;
         pVelocity = new MyVector();
         this.center = new MyVector(location.x , location.y);
         this.imgPlayer = imgPlayer;
         this.radius = radius;
-        this.bounds = bounds;
         this.keys = keys;
         alive = true;
         angle = randomAngle();
         this.pLocation.add((radius+21) * (float)Math.cos(angle), (radius+21) * (float)Math.sin(angle));
-        acceleration = 0;
-        accelerationtimer = 0;
         animationLand = false;
     }
     public Player(Planet relPla, BufferedImage imgPlayer, int[] keys){
         this(relPla.getpLocation().copy()
                 , (int)relPla.getRadius() // <-- BUGSS!!!!
-                , relPla.getBbounds()
                 , imgPlayer
                 , keys);
         this.relativePlanet = relPla;
@@ -66,20 +56,14 @@ public class Player extends JPanel implements KeyListener {
     public boolean getJumping() {
         return jumping;
     }
-    public float getAngle(){
-        return angle;
-    }
     public boolean getAlive(){
         return alive;
     }
-    public int getAcceleration(){
-        return acceleration;
+    public float getRadVelocity(){
+        return radVelocity;
     }
     public void setAlive(boolean alive){
         this.alive = alive;
-    }
-    public void setAngle(int angle){
-        this.angle = angle;
     }
     //Functions
     public void paint(Graphics g){
@@ -87,18 +71,13 @@ public class Player extends JPanel implements KeyListener {
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
         transform.translate(pLocation.x-21, pLocation.y-21);
-//        System.out.println(angle);
         transform.rotate(angle + Math.PI/2, 21,21);
         if(moving || jumping) {
             animate();
         }
         g2d.drawImage(imgPlayer.getSubimage(currentSpriteX*frameSize,currentSpriteY*frameSize, frameSize, frameSize), transform, this);
-
-        //g.fillRect((int)(pLocation.x + radius + (radius + height + height/2 + bounds)*Math.cos(Math.toRadians(angle - 135))),(int)(pLocation.y + radius + (radius + height + height/2 + bounds)*Math.sin(Math.toRadians(angle - 135))), 10, 10);
-
     }
     public void move() {
-//        System.out.println(radVelocity);
         update();
         if(jumping){
             pVelocity = MyVector.sub(pLocation, relativePlanet.getpLocation()).normalize();
@@ -159,28 +138,18 @@ public class Player extends JPanel implements KeyListener {
         }
         return false;
     }
-    public float findGridX(){
-        return (float)(pLocation.x + (radius)*Math.cos(Math.toRadians(angle)));
-    }
-    public float findGridY(){
-        return (float)(pLocation.y + (radius)*Math.sin(Math.toRadians(angle)));
-    }
     public void land(Planet planet){
         //Calculate new angle
         this.relativePlanet = planet;
         this.center.set(relativePlanet.getpLocation());
-
         radLocation = 0;
         radVelocity = 0;
-
-//        angle = (float)Math.toRadians(MyVector.angle(pLocation, relativePlanet.getpLocation()));
         angle = (float)Math.atan((pLocation.y - relativePlanet.getpLocation().y)/(pLocation.x - relativePlanet.getpLocation().x));
         jumping = false;
         moving = true;
         currentSpriteX = 0;
         currentSpriteY = 0;
         animationLand = true;
-        height = 0;
     }
     public void addKeyListener(JFrame frame) {
         frame.addKeyListener(this);
@@ -194,7 +163,7 @@ public class Player extends JPanel implements KeyListener {
         if(!jumping) {
             if (keyCode == keys[0]) {
                 moving = true;
-                if(acceleration == 0)radAcceleration = relativePlanet.getPlanetaryAcceleration();
+                radAcceleration = relativePlanet.getPlanetaryAcceleration();
             }
         }
         if(moving) {

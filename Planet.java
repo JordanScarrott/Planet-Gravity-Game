@@ -6,10 +6,11 @@ public class Planet extends JPanel {
 
     private BufferedImage imgPlanet = null;
     private MyVector pLocation;
-    private MyVector center;
     private float radius;
-    private int bounds;
     private float perimeter;
+
+    private int spriteGlowX;
+    private int spriteGlowY;
 
     public static final float MAX_VELOCITY = 0.8f;
     public static final float MAX_ACCELERATION = 0.001f;
@@ -17,17 +18,17 @@ public class Planet extends JPanel {
     private float planetaryAcceleration;
 
     // Constructor
-    public Planet(MyVector location, float radius,int bounds, BufferedImage imgPlanet) {
+    public Planet(MyVector location, float radius, int spriteGlowX, int spriteGlowY, BufferedImage imgPlanet) {
         this.pLocation = location;
         this.radius = radius;
-        this.bounds = bounds;
         this.imgPlanet = imgPlanet;
         perimeter = 2 * (float)Math.PI * this.radius;
-
+        this.spriteGlowX = spriteGlowX;
+        this.spriteGlowY = spriteGlowY;
         planetaryAcceleration = MAX_ACCELERATION * (1 - (this.radius / (250 + 10)));
     }
-    public Planet(float x, float y, float radius, int bounds, BufferedImage imgPlanet) {
-        this(new MyVector(x, y), radius,bounds, imgPlanet);
+    public Planet(float x, float y, float radius, int spriteGlowX, int spriteGlowY, BufferedImage imgPlanet) {
+        this(new MyVector(x, y), radius, spriteGlowX, spriteGlowY, imgPlanet);
     }
 
 
@@ -43,10 +44,6 @@ public class Planet extends JPanel {
     public float getRadius() {
         return radius;
     }
-    public int getBbounds() {
-        return bounds;
-    }
-
     public float getPlanetaryAcceleration() {
         return planetaryAcceleration;
     }
@@ -67,13 +64,9 @@ public class Planet extends JPanel {
         this.imgPlanet = imgPlanet;
     }
 
-    public MyVector getCenter() {
-        return center;
-    }
-
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(imgPlanet, (int) pLocation.x - (int)radius, (int) pLocation.y - (int)radius, null);
+        g.drawImage(imgPlanet, (int) pLocation.x - (int)radius -spriteGlowX, (int) pLocation.y - (int)radius -spriteGlowY, null);
     }
 
 }

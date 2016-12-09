@@ -75,7 +75,7 @@ public class Game extends JPanel {
         else return false;
     }
     public void findSlowerPlayer(int i, int j){
-        if (players.get(i).getAcceleration() > players.get(j).getAcceleration())killPlayer(j);
+        if (players.get(i).getRadVelocity() > players.get(j).getRadVelocity())killPlayer(j);
         else killPlayer(i);
     }
     public void killPlayer(int i){
