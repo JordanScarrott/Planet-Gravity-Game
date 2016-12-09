@@ -145,6 +145,14 @@ public class MyVector extends Vec2f {
     }
 
     /**
+     * Rotate the MyVector represented by this instance
+     * @param radAngle angle in radians
+     * */
+    public void rotate(float radAngle) {
+        this.set(rotate(this, radAngle));
+    }
+
+    /**
      * Sets the components, x and y, of this <code>core.MyVector</code>
      */
     public void set(MyVector v) {
