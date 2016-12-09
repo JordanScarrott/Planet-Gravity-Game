@@ -61,6 +61,9 @@ public abstract class ResourceLoader {
             Clip clip = AudioSystem.getClip();
             AudioInputStream inputStream = AudioSystem.getAudioInputStream(loader.getResourceAsStream("res/sounds/" + file));
             clip.open(inputStream);
+            if (file == "bgm.wav") {
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
             clip.start();
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException exx) {
             exx.printStackTrace();

@@ -27,6 +27,7 @@ public class Player extends JPanel implements KeyListener {
     private float angle;
     private boolean moving = false;
     private boolean jumping = false;
+    private int wins;
     private int[] keys;
     private int frameSize = 42;
     private boolean animationLand;
@@ -40,6 +41,7 @@ public class Player extends JPanel implements KeyListener {
         this.radius = radius;
         this.keys = keys;
         alive = true;
+        this.wins = 0;
         angle = randomAngle();
         this.pLocation.add((radius+21) * (float)Math.cos(angle), (radius+21) * (float)Math.sin(angle));
         animationLand = false;
@@ -50,6 +52,7 @@ public class Player extends JPanel implements KeyListener {
                 , imgPlayer
                 , keys);
         this.relativePlanet = relPla;
+        this.wins = 0;
 
     }
     //Getters and Setters
@@ -170,6 +173,7 @@ public class Player extends JPanel implements KeyListener {
             if (keyCode == keys[1]) {
                 moving = false;
                 jumping = true;
+                ResourceLoader.loadAudio("jump.wav");
                 currentSpriteY = 1;
             }
         }
@@ -184,5 +188,18 @@ public class Player extends JPanel implements KeyListener {
 
     public void setpLocation(MyVector pLocation) {
         this.pLocation = pLocation;
+    }
+
+    public void setNewLocation() {
+        angle = randomAngle();
+        this.pLocation.add((radius+21) * (float)Math.cos(angle), (radius+21) * (float)Math.sin(angle));
+    }
+
+    public int getWins() {
+        return this.wins;
+    }
+
+    public void win() {
+        this.wins++;
     }
 }

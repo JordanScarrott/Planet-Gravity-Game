@@ -26,6 +26,7 @@ public class Menu extends JPanel implements KeyListener{
     private int currentSprite;
 
     private boolean levelSelect;
+    private boolean setup;
 
     private JFrame jframe;
 
@@ -33,6 +34,7 @@ public class Menu extends JPanel implements KeyListener{
         addKeyListener(frame);
         jframe = frame;
         levelSelect = false;
+        setup = false;
         finished = false;
         for (int i=1; i<4; i++) {
             playerSprites[i-1] = ResourceLoader.loadImage("Hamster" + i + ".png");
@@ -77,7 +79,7 @@ public class Menu extends JPanel implements KeyListener{
         }
 
         if (keyCode == KeyEvent.VK_ENTER) {
-            if (!levelSelect) {
+            if (!setup && !levelSelect) {
                 if (cursY == 110) {
                     if (currentTime - lastTime >= delay) {
                         ResourceLoader.loadAudio("selectSound.wav");
@@ -88,12 +90,32 @@ public class Menu extends JPanel implements KeyListener{
                     jframe.dispatchEvent(new WindowEvent(jframe, WindowEvent.WINDOW_CLOSING));
                 }
             }
-            else {
+            else if (!setup) {
+                if (currentTime - lastTime >= delay) {
+                    ResourceLoader.loadAudio("selectSound.wav");
+                    lastTime = currentTime;
+                }
+                levelSelect = false;
+                setup = true;
+            }
+            else if (!levelSelect){
+
+                if (cursY == 110) {
+                    Game.setRounds(5);
+                }
+                else if (cursY == 260) {
+                    Game.setRounds(10);
+                }
+                else {
+                    Game.setRounds(15);
+                }
+
                 if (currentTime - lastTime >= delay) {
                     ResourceLoader.loadAudio("selectSound.wav");
                     lastTime = currentTime;
                 }
                 planets = LevelCreator.generateLevel((cursY-110)/150);
+                setup = true;
                 finished = true;
             }
         }
@@ -129,10 +151,15 @@ public class Menu extends JPanel implements KeyListener{
         super.paint(g);
         g.drawImage(imgBackground, 0, 0, null);
         g.drawImage(menuPane, 215, 0, null);
-        if (!levelSelect) {
+        if (!levelSelect && !setup) {
             g.drawImage(playImg, 260, 90, null);
             g.drawImage(optImg, 260, 240, null);
             g.drawImage(quitImg, 260, 390, null);
+        }
+        else if (!setup) {
+            g.drawImage(playImg, 260, 90, null);
+            g.drawImage(playImg, 260, 240, null);
+            g.drawImage(playImg, 260, 390, null);
         }
         else {
             g.drawImage(playImg, 260, 90, null);

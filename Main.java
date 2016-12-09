@@ -15,8 +15,9 @@ public class Main {
     }
 
     public static void runnit() throws InterruptedException {
-         Menu menu;
-         Game game;
+        Menu menu;
+        Game game;
+        GameOver gameOver;
         ResourceLoader.loadAudio("bgm.wav");
         //Loop
         while(true) {
@@ -24,6 +25,8 @@ public class Main {
             Menu(frame, menu);
             game = new Game(frame, menu.getPlanets());
             Game(frame, game);
+            gameOver = new GameOver(frame);
+            GameOver(frame, gameOver);
         }
     }
     public static void Menu(JFrame frame, Menu menu){
@@ -61,6 +64,25 @@ public class Main {
         }
         game.setFinished(false);
         currentFrame.remove(game);
+        currentFrame = null;
+    }
+
+    public static void GameOver(JFrame frame, GameOver gameOver){
+        currentFrame = frame;
+        currentFrame.add(gameOver);
+        gameOver.setVisible(true);
+        currentFrame.revalidate();
+        currentFrame.repaint();
+        while(!gameOver.getFinished()) {
+            gameOver.repaint();
+            try {
+                Thread.sleep(20);
+            }catch(Exception e){
+
+            }
+        }
+        gameOver.setFinished(false);
+        currentFrame.remove(gameOver);
         currentFrame = null;
     }
 }

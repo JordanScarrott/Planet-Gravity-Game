@@ -1,11 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-public class Game extends JPanel {
+public class Game extends JPanel implements KeyListener {
     private BufferedImage imgBackground;
+    private static int rounds;
+    private static int winner;
     ArrayList<Planet> planets = new ArrayList<Planet>();
     ArrayList<Player> players = new ArrayList<Player>();
     private int[] planetID = new int[4]; //Indicates on which planet the respective player is on
@@ -13,6 +16,7 @@ public class Game extends JPanel {
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
     public Game(JFrame frame, ArrayList<Planet> planets) {
+        frame.addKeyListener(this);
         this.planets = planets;
         imgBackground = ResourceLoader.loadImage("background.png");
         finished = false;
@@ -28,6 +32,12 @@ public class Game extends JPanel {
         for(Player i : players){
             if(i.getAlive())i.paint(g);
         }
+        g.setFont(new Font("Arial", 0, 20));
+        g.setColor(Color.WHITE);
+        g.drawString("P1: " + players.get(0).getWins(), 10, 550);
+        g.drawString("P2: " + players.get(1).getWins(), 110, 550);
+        g.drawString("P3: " + players.get(2).getWins(), 210, 550);
+        g.drawString("P4: " + players.get(3).getWins(), 310, 550);
     }
 
     public void move() {
@@ -58,7 +68,7 @@ public class Game extends JPanel {
         for(int i = 0; i < players.size(); i++) {
             for(int j = i+1; j < players.size(); j++) {
                 if (players.get(i).getAlive() && players.get(j).getAlive() && checkPlayerSpriteCollision(i, j)) {
-                        findSlowerPlayer(i, j);
+                    findSlowerPlayer(i, j);
                 }
             }
         }
@@ -75,12 +85,17 @@ public class Game extends JPanel {
         else return false;
     }
     public void findSlowerPlayer(int i, int j){
-        if (players.get(i).getRadVelocity() > players.get(j).getRadVelocity())killPlayer(j);
-        else killPlayer(i);
+        if (players.get(i).getRadVelocity() > players.get(j).getRadVelocity()) {
+            killPlayer(j);
+        }
+        else {
+            killPlayer(i);
+        }
     }
     public void killPlayer(int i){
         players.get(i).setAlive(false);
         System.out.println("player " + (i+1) + " was killed");
+        ResourceLoader.loadAudio("death.wav");
         int x = checkIfWinner();
         if(x != -1)Winner(x);
     }
@@ -104,15 +119,15 @@ public class Game extends JPanel {
     }
     public void randomSpawn(int i){ //Random a planet for player to spawn on
 
-            do {
-                planetID[i] = (int)(Math.random()*planets.size());
-               } while (!stopPlayersSpawningTooClose(i));
+        do {
+            planetID[i] = (int)(Math.random()*planets.size());
+        } while (!stopPlayersSpawningTooClose(i));
         //System.out.println((int)(Math.random()*planets.size()));     //printing out values in menu screen, Investigate this
     }
     public boolean stopPlayersSpawningTooClose(int i){//Return false if players are too close
         for(int j = 0; j < i; j++){
             if(planetID[j] == planetID[i]) {
-            return false;
+                return false;
             }
         }
         return true;
@@ -132,9 +147,45 @@ public class Game extends JPanel {
         keys[3][1] = KeyEvent.VK_M; //Jump
     }
     public void Winner(int playerID){
-        System.out.println("Winner is " + (playerID+1)); //Do winning stuff here
+        players.get(playerID).win();
+        rounds--;
         try{Thread.sleep(1000);}
         catch(Exception e){}
-        finished = true;
+        if (rounds == 0) {
+            finished = true;
+            System.out.println("Winner is Player " + (playerID+1) + "!");
+        }
+        else {
+            for(int i = 0; i < players.size(); i++) {
+                players.get(i).setNewLocation();
+                if (!players.get(i).getAlive()) {
+                    players.get(i).setAlive(true);
+                    System.out.println("Player " + (playerID+1) + " Wins the round!");
+                    winner = playerID + 1;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            finished = true;
+        }
+    }
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    public static void setRounds(int in_rounds) {
+        rounds = in_rounds;
+    }
+
+    public static int getWinner() {
+        return winner;
     }
 }
