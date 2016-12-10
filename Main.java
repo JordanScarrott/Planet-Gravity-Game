@@ -7,20 +7,21 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         frame.setSize(800, 600);  // Window Size
-       // frame.setUndecorated(true);
+        // frame.setUndecorated(true);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-       // frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        // frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         runnit();
     }
+
     public static void runnit() throws InterruptedException {
         Menu menu;
         Game game;
         GameOver gameOver;
         ResourceLoader.loadAudio("bgm.wav");
         //Loop
-        while(true) {
+        while (true) {
             menu = new Menu(frame);
             Menu(frame, menu);
             game = new Game(frame, menu.getPlanets(), menu.getRounds(), menu.getPlayerAmount(), menu.getGameSpeed());
@@ -29,17 +30,18 @@ public class Main {
             GameOver(frame, gameOver);
         }
     }
-    public static void Menu(JFrame frame, Menu menu){
+
+    public static void Menu(JFrame frame, Menu menu) {
         currentFrame = frame;
         currentFrame.add(menu);
         menu.setVisible(true);
         currentFrame.revalidate();
-        while(!menu.getFinished()){
+        while (!menu.getFinished()) {
             menu.repaint();
             menu.move();
             try {
                 Thread.sleep(20);
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -47,18 +49,19 @@ public class Main {
         currentFrame.remove(menu);
         currentFrame = null;
     }
-    public static void Game(JFrame frame, Game game){
+
+    public static void Game(JFrame frame, Game game) {
         currentFrame = frame;
         currentFrame.add(game);
         game.setVisible(true);
         currentFrame.revalidate();
         currentFrame.repaint();
-        while(!game.getFinished()){
+        while (!game.getFinished()) {
             game.repaint();
             game.move();
             try {
                 Thread.sleep(20);
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -67,17 +70,17 @@ public class Main {
         currentFrame = null;
     }
 
-    public static void GameOver(JFrame frame, GameOver gameOver){
+    public static void GameOver(JFrame frame, GameOver gameOver) {
         currentFrame = frame;
         currentFrame.add(gameOver);
         gameOver.setVisible(true);
         currentFrame.revalidate();
         currentFrame.repaint();
-        while(!gameOver.getFinished()) {
+        while (!gameOver.getFinished()) {
             gameOver.repaint();
             try {
                 Thread.sleep(20);
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
         }
