@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class Menu extends JPanel implements KeyListener{
     ArrayList<Planet> planets = new ArrayList<Planet>();
+    private int playerAmount = 2;
+    private int roundsAmount = 3;
     private boolean finished;
     private int cursY = 110;
     private BufferedImage[] playerSprites = new BufferedImage[4];
@@ -16,6 +18,8 @@ public class Menu extends JPanel implements KeyListener{
     private BufferedImage playImg = ResourceLoader.loadImage("MenuScreen/playbutton.png");
     private BufferedImage optImg = ResourceLoader.loadImage("MenuScreen/optionsbutton.png");
     private BufferedImage quitImg = ResourceLoader.loadImage("MenuScreen/Exitbutton.png");
+    private BufferedImage playerAmtImg = ResourceLoader.loadImage("MenuScreen/playerAmount.png");
+    private BufferedImage roundsAmtImg = ResourceLoader.loadImage("/Tumble1.png");
 
     private long currentTime;
     private long lastTime = 0;
@@ -26,7 +30,10 @@ public class Menu extends JPanel implements KeyListener{
     private int currentSprite;
 
     private boolean levelSelect;
-    private boolean setup;
+    private boolean gameSetup;
+
+    private final int MAX_PLAYERS = 8;
+    private final int MAX_ROUNDS = 7;
 
     private JFrame jframe;
 
@@ -34,7 +41,7 @@ public class Menu extends JPanel implements KeyListener{
         addKeyListener(frame);
         jframe = frame;
         levelSelect = false;
-        setup = false;
+        gameSetup = false;
         finished = false;
         for (int i=1; i<4; i++) {
             playerSprites[i-1] = ResourceLoader.loadImage("Hamster" + i + ".png");
@@ -77,9 +84,35 @@ public class Menu extends JPanel implements KeyListener{
                 lastTime = currentTime;
             }
         }
+        if (keyCode == KeyEvent.VK_RIGHT) {
+            if(gameSetup) {
+                if (cursY == 110) {
+                    if(playerAmount < MAX_PLAYERS)playerAmount++;
+                }else if(cursY == 260){
+                    if(roundsAmount < MAX_ROUNDS)roundsAmount++;
+                }
+                if (currentTime-lastTime>=delay) {
+                    ResourceLoader.loadAudio("cursorMove.wav");
+                    lastTime = currentTime;
+                }
+            }
+        }
+        if (keyCode == KeyEvent.VK_LEFT) {
+            if(gameSetup) {
+                if (cursY == 110) {
+                    if(playerAmount > 2)playerAmount--;
+                }else if(cursY == 260){
+                    if(roundsAmount > 1)roundsAmount--;
+                }
+                if (currentTime-lastTime>=delay) {
+                    ResourceLoader.loadAudio("cursorMove.wav");
+                    lastTime = currentTime;
+                }
+            }
+        }
 
         if (keyCode == KeyEvent.VK_ENTER) {
-            if (!setup && !levelSelect) {
+            if (!levelSelect) {
                 if (cursY == 110) {
                     if (currentTime - lastTime >= delay) {
                         ResourceLoader.loadAudio("selectSound.wav");
@@ -90,32 +123,19 @@ public class Menu extends JPanel implements KeyListener{
                     jframe.dispatchEvent(new WindowEvent(jframe, WindowEvent.WINDOW_CLOSING));
                 }
             }
-            else if (!setup) {
+            else if(!gameSetup) {
                 if (currentTime - lastTime >= delay) {
                     ResourceLoader.loadAudio("selectSound.wav");
                     lastTime = currentTime;
                 }
-                levelSelect = false;
-                setup = true;
+                gameSetup = true;
             }
-            else if (!levelSelect){
-
-                if (cursY == 110) {
-                    Game.setRounds(5);
-                }
-                else if (cursY == 260) {
-                    Game.setRounds(10);
-                }
-                else {
-                    Game.setRounds(15);
-                }
-
+            else{
                 if (currentTime - lastTime >= delay) {
                     ResourceLoader.loadAudio("selectSound.wav");
                     lastTime = currentTime;
                 }
                 planets = LevelCreator.generateLevel((cursY-110)/150);
-                setup = true;
                 finished = true;
             }
         }
@@ -125,6 +145,12 @@ public class Menu extends JPanel implements KeyListener{
     }
     public boolean getFinished(){
         return finished;
+    }
+    public int getPlayerAmount(){
+        return playerAmount;
+    }
+    public int getRounds(){
+        return roundsAmount;
     }
     public ArrayList<Planet> getPlanets(){
         return planets;
@@ -151,21 +177,26 @@ public class Menu extends JPanel implements KeyListener{
         super.paint(g);
         g.drawImage(imgBackground, 0, 0, null);
         g.drawImage(menuPane, 215, 0, null);
-        if (!levelSelect && !setup) {
+        if (!levelSelect) {
             g.drawImage(playImg, 260, 90, null);
             g.drawImage(optImg, 260, 240, null);
             g.drawImage(quitImg, 260, 390, null);
         }
-        else if (!setup) {
+        else if(!gameSetup){
             g.drawImage(playImg, 260, 90, null);
             g.drawImage(playImg, 260, 240, null);
             g.drawImage(playImg, 260, 390, null);
-        }
-        else {
-            g.drawImage(playImg, 260, 90, null);
-            g.drawImage(playImg, 260, 240, null);
+        }else{
+            g.setFont(new Font("Arial", 0, 20));
+            g.setColor(Color.WHITE);
+            g.drawString("Number of Players: ", 260, 90);
+            g.drawString("Number of Rounds: ", 260, 240);
             g.drawImage(playImg, 260, 390, null);
-        }
+            for(int i = 0; i < playerAmount; i++)
+            g.drawImage(playerAmtImg.getSubimage(i*42,0, 42, 42), 260 + i*44, 140, null);
+            for(int i = 0; i < roundsAmount; i++)
+                g.drawImage(roundsAmtImg, 260 + i * 44, 290, null);
+    }
         g.drawImage(playerSprites[currentSprite], 210, cursY, null);
     }
 }

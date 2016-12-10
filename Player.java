@@ -154,6 +154,20 @@ public class Player extends JPanel implements KeyListener {
         currentSpriteY = 0;
         animationLand = true;
     }
+    public void spawn(Planet planet){
+
+        this.pLocation = planet.getpLocation().copy();
+        this.relativePlanet = planet;
+        this.center.set(relativePlanet.getpLocation());
+        this.radius = (int)planet.getRadius();
+        this.pLocation.add((radius+21) * (float)Math.cos(angle), (radius+21) * (float)Math.sin(angle));
+        moving = false;
+        jumping = false;
+        radLocation = 0;
+        radVelocity = 0;
+        currentSpriteX = 0;
+        currentSpriteY = 0;
+    }
     public void addKeyListener(JFrame frame) {
         frame.addKeyListener(this);
     }

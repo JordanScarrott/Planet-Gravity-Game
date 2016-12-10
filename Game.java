@@ -7,22 +7,22 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements KeyListener {
     private BufferedImage imgBackground;
-    private static int rounds;
+    private static int rounds = 1;
     private static int winner;
     ArrayList<Planet> planets = new ArrayList<Planet>();
     ArrayList<Player> players = new ArrayList<Player>();
-    private int[] planetID = new int[4]; //Indicates on which planet the respective player is on
+    private int[] planetID = new int[8]; //Indicates on which planet the respective player is on
     private int[][] keys = new int[4][2]; //Keyboard inputs for player 1
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
-    public Game(JFrame frame, ArrayList<Planet> planets) {
+    public Game(JFrame frame, ArrayList<Planet> planets, int rounds, int playersAmount) {
         frame.addKeyListener(this);
+        this.rounds = rounds;
         this.planets = planets;
         imgBackground = ResourceLoader.loadImage("background.png");
         finished = false;
-        addPlayers(frame);
+        addPlayers(frame, playersAmount);
     }
-
     public void paint(Graphics g) {
         super.paint(g);
         g.drawImage(imgBackground, 0, 0, null);
@@ -32,12 +32,14 @@ public class Game extends JPanel implements KeyListener {
         for(Player i : players){
             if(i.getAlive())i.paint(g);
         }
+        //GUI
         g.setFont(new Font("Arial", 0, 20));
-        g.setColor(Color.WHITE);
-        g.drawString("P1: " + players.get(0).getWins(), 10, 550);
-        g.drawString("P2: " + players.get(1).getWins(), 110, 550);
-        g.drawString("P3: " + players.get(2).getWins(), 210, 550);
-        g.drawString("P4: " + players.get(3).getWins(), 310, 550);
+        for(int i = 0; i < players.size(); i++) {
+            if(players.get(i).getAlive())g.setColor(Color.WHITE);
+            else g.setColor(Color.GRAY);
+            g.drawString("P" + (i+1) + ": " + players.get(i).getWins(), 10 + 100*i, 550);
+        }
+        //
     }
 
     public void move() {
@@ -109,8 +111,8 @@ public class Game extends JPanel implements KeyListener {
         if(x == players.size()-1)return j;
         else return -1;
     }
-    public void addPlayers(JFrame frame){
-        for(int i = 0; i < 4; i++) {
+    public void addPlayers(JFrame frame, int playersAmount){
+        for(int i = 0; i < playersAmount; i++) {
             randomSpawn(i);
             players.add(new Player(planets.get(planetID[i]), ResourceLoader.loadImage("animate2.png"), keys[i]));
             players.get(i).addKeyListener(frame);
@@ -149,19 +151,19 @@ public class Game extends JPanel implements KeyListener {
     public void Winner(int playerID){
         players.get(playerID).win();
         rounds--;
+        winner = playerID + 1;
         try{Thread.sleep(1000);}
         catch(Exception e){}
         if (rounds == 0) {
             finished = true;
-            System.out.println("Winner is Player " + (playerID+1) + "!");
         }
         else {
             for(int i = 0; i < players.size(); i++) {
-                players.get(i).setNewLocation();
+                randomSpawn(i);
+                players.get(i).randomAngle();
+                players.get(i).spawn(planets.get(planetID[i]));
                 if (!players.get(i).getAlive()) {
                     players.get(i).setAlive(true);
-                    System.out.println("Player " + (playerID+1) + " Wins the round!");
-                    winner = playerID + 1;
                 }
             }
         }

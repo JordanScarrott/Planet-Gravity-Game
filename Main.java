@@ -13,7 +13,6 @@ public class Main {
 
         runnit();
     }
-
     public static void runnit() throws InterruptedException {
         Menu menu;
         Game game;
@@ -23,7 +22,7 @@ public class Main {
         while(true) {
             menu = new Menu(frame);
             Menu(frame, menu);
-            game = new Game(frame, menu.getPlanets());
+            game = new Game(frame, menu.getPlanets(), menu.getRounds(), menu.getPlayerAmount());
             Game(frame, game);
             gameOver = new GameOver(frame);
             GameOver(frame, gameOver);
