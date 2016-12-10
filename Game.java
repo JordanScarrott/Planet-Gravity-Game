@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public class Game extends JPanel implements KeyListener {
     private BufferedImage imgBackground;
-    private static int rounds = 1;
+    private static int rounds;
+    private static int maxRounds;
     private static int winner;
     ArrayList<Planet> planets = new ArrayList<Planet>();
     ArrayList<Player> players = new ArrayList<Player>();
@@ -18,6 +19,7 @@ public class Game extends JPanel implements KeyListener {
     public Game(JFrame frame, ArrayList<Planet> planets, int rounds, int playersAmount) {
         frame.addKeyListener(this);
         this.rounds = rounds;
+        maxRounds = rounds;
         this.planets = planets;
         imgBackground = ResourceLoader.loadImage("background.png");
         finished = false;
@@ -34,6 +36,8 @@ public class Game extends JPanel implements KeyListener {
         }
         //GUI
         g.setFont(new Font("Arial", 0, 20));
+        g.setColor(Color.WHITE);
+        g.drawString("Round " + (maxRounds-rounds + 1) + "/" + maxRounds, 680, 40);
         for(int i = 0; i < players.size(); i++) {
             if(players.get(i).getAlive())g.setColor(Color.WHITE);
             else g.setColor(Color.GRAY);
