@@ -15,7 +15,7 @@ public class Menu extends JPanel implements KeyListener{
     private int cursY = 110;
     private int levelY = 110;
     private BufferedImage[] playerSprites = new BufferedImage[4];
-    private BufferedImage imgBackground = ResourceLoader.loadImage("background.png");
+    private BufferedImage imgBackground = ResourceLoader.loadImage("backgroundtest.png");
     private BufferedImage menuPane = ResourceLoader.loadImage("MenuScreen/TExtMenuThing.png");
     private BufferedImage playImg = ResourceLoader.loadImage("MenuScreen/playbutton.png");
     private BufferedImage optImg = ResourceLoader.loadImage("MenuScreen/optionsbutton.png");

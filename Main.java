@@ -6,11 +6,12 @@ public class Main {
     static JFrame currentFrame;
 
     public static void main(String[] args) throws InterruptedException {
-        frame.setSize(810, 635);  // Window Size
+        frame.setSize(800, 600);  // Window Size
+       // frame.setUndecorated(true);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-
+       // frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         runnit();
     }
     public static void runnit() throws InterruptedException {

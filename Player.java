@@ -130,8 +130,14 @@ public class Player extends JPanel implements KeyListener {
                 radVelocity += radAcceleration* gameSpeed*0.25;
                 radLocation += radVelocity;
             }else{
-                radVelocity -= 2 * radAcceleration * gameSpeed*0.25;
-                radLocation += radVelocity;
+                if(radVelocity > 7){
+                    radVelocity -= 10 * radAcceleration * gameSpeed*0.25;
+                    radLocation += radVelocity;
+                }else{
+                    radVelocity -= 2 * radAcceleration * gameSpeed*0.25;
+                    radLocation += radVelocity;
+                }
+
             }
         }
     }
@@ -157,6 +163,7 @@ public class Player extends JPanel implements KeyListener {
         currentSpriteX = 0;
         currentSpriteY = 0;
         animationLand = true;
+        radAcceleration = relativePlanet.getPlanetaryAcceleration();
     }
     public void spawn(Planet planet){
 

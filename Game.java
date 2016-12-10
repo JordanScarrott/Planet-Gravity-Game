@@ -23,7 +23,7 @@ public class Game extends JPanel implements KeyListener {
         this.gameSpeed = gameSpeed;
         maxRounds = rounds;
         this.planets = planets;
-        imgBackground = ResourceLoader.loadImage("background.png");
+        imgBackground = ResourceLoader.loadImage("backgroundtest.png");
         finished = false;
         addPlayers(frame, playersAmount);
     }
@@ -84,9 +84,9 @@ public class Game extends JPanel implements KeyListener {
     }
     public boolean checkPlayerInsideGrid(int i){
         if(players.get(i).getpLocation().x + 21 < 0
-                || players.get(i).getpLocation().x - 21 > 800
+                || players.get(i).getpLocation().x - 21 > 1280
                 || players.get(i).getpLocation().y + 21 < 0
-                || players.get(i).getpLocation().y + 21 > 600)return true;
+                || players.get(i).getpLocation().y + 21 > 720)return true;
         else return false;
     }
     public boolean checkPlayerSpriteCollision(int i, int j){

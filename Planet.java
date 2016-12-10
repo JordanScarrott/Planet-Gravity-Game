@@ -12,8 +12,8 @@ public class Planet extends JPanel {
     private int spriteGlowX;
     private int spriteGlowY;
 
-    public static final float MAX_VELOCITY = 15;
-    public static final float MAX_ACCELERATION = 0.018f;
+    public static final float MAX_VELOCITY = 20;
+    public static final float MAX_ACCELERATION = 0.02f;
     private float thisPlanetsMax;
 
     private float planetaryAcceleration;
@@ -27,11 +27,12 @@ public class Planet extends JPanel {
         this.spriteGlowX = spriteGlowX;
         this.spriteGlowY = spriteGlowY;
 //        planetaryAcceleration = Convert.map(radius, 110, 40, 0, MAX_ACCELERATION);
-        planetaryAcceleration = MAX_ACCELERATION * (1 - (this.radius / (175 + 10)));
+        if(radius == 41) planetaryAcceleration = 0.05f;
+        else planetaryAcceleration = MAX_ACCELERATION * (1 - (this.radius / (175 + 10)));
         if(radius == 100)thisPlanetsMax = 3;
         if(radius == 75)thisPlanetsMax = 4;
         if(radius == 50)thisPlanetsMax = 7;
-        if(radius == 41)thisPlanetsMax = 15;
+        if(radius == 41)thisPlanetsMax = 30;
     }
     public Planet(float x, float y, float radius, int spriteGlowX, int spriteGlowY, BufferedImage imgPlanet) {
         this(new MyVector(x, y), radius, spriteGlowX, spriteGlowY, imgPlanet);
