@@ -1,6 +1,7 @@
 import com.sun.javafx.geom.Vec2f;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
+import java.util.Random;
 
 /**
  * A 2-dimensional, single-precision, floating-point vector with operator methods
@@ -312,18 +313,14 @@ public class MyVector extends Vec2f {
 
     /**
      * Returns a random MyVector
-     * @param lowerBound the lowest x or y value that can be returned
-     * @param upperBound the highest x or y value that can be returned
-     * @return a random MyVector of Real numbers
+     * @return a random MyVector of with components ranging from 0 to 1
      * */
-    /*public static MyVector randomMyVector(int lowerBound, int upperBound) {
+    public static MyVector randomMyVector() {
         Random rand = new Random();
-        float x = rand.nextInt(upperBound - lowerBound);
-        x = x > 0 ? x + lowerBound : -x + lowerBound;
-        float y = rand.nextInt(upperBound - lowerBound);
-        y = y > 0 ? y + lowerBound : -y + lowerBound;
-        return new MyVector(x, y);
-    }*/
+
+        // Choose random floats between 0 and 1
+        return new MyVector(rand.nextFloat(), rand.nextFloat());
+    }
 
     /**
      * Computes the angle (in degrees) between this core.MyVector and
