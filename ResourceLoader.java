@@ -20,11 +20,12 @@ public abstract class ResourceLoader {
         return img;
     }
 
-   /**
-    * Gets a random image from the specified folder
-    * @return null if the folderPath specified is not a folder
-    *   else returns a random BufferedImage from the folder
-    */
+    /**
+     * Gets a random image from the specified directory
+     *
+     * @return null if the folderPath specified is not a directory
+     * else returns a random BufferedImage from the directory
+     */
     protected static BufferedImage getRandomImage(String folderPath) {
         File folderToSearch = new File(folderPath);
 
@@ -41,19 +42,19 @@ public abstract class ResourceLoader {
         // Make sure we don't pick a folder instead of a file
         do {
             randomFileNumber = rand.nextInt(imageFiles.length);
-        } while(imageFiles[randomFileNumber].isDirectory());
+        } while (imageFiles[randomFileNumber].isDirectory());
 
         // Prepare string to send to the loadImage() method
         String[] pathSegments = folderPath.split("images/");
         String imageFileName = imageFiles[randomFileNumber].getName();
 
-        return loadImage(pathSegments[pathSegments.length-1] + "/" + imageFileName);
+        return loadImage(pathSegments[pathSegments.length - 1] + "/" + imageFileName);
     }
 
     protected static BufferedImage getRandomPlanet() {
         return getRandomImage("src/res/images/Planets");
     }
-    
+
     protected static void loadAudio(String file) {
 
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
