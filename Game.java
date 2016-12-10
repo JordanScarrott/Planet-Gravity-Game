@@ -14,7 +14,7 @@ public class Game extends JPanel implements KeyListener {
     ArrayList<Player> players = new ArrayList<Player>();
     private BufferedImage imgBackground;
     private int[] planetID = new int[8]; //Indicates on which planet the respective player is on
-    private int[][] keys = new int[8][2]; //Keyboard inputs for player 1
+    private int[][] keys = new int[8][2]; //Keyboard inputs for players
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
 
@@ -39,7 +39,8 @@ public class Game extends JPanel implements KeyListener {
 
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(imgBackground, 0, 0, null);
+        g.fillRect(0, 0, Convert.getScreenWidth(), Convert.getScreenHeight());
+        g.drawImage(imgBackground, Convert.getCropX(), 0,(int)(Convert.getScreenWidth()*Convert.getVirtualAspectRatio()),Convert.getScreenHeight(), null);
         for (Planet i : planets) {
             i.paint(g);
         }

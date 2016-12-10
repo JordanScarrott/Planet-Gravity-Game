@@ -39,7 +39,7 @@ public class Planet extends JPanel {
 
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(imgPlanet, (int) pLocation.x - (int) radius - spriteGlowX, (int) pLocation.y - (int) radius - spriteGlowY, null);
+        g.drawImage(imgPlanet, Convert.getCropX() + Convert.scale((int) pLocation.x - (int) radius - spriteGlowX), Convert.scale((int) pLocation.y - (int) radius - spriteGlowY), Convert.scale(imgPlanet.getWidth()),Convert.scale(imgPlanet.getHeight()), null);
     }
 
 

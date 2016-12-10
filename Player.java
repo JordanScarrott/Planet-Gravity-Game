@@ -48,12 +48,12 @@ public class Player extends JPanel implements KeyListener {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
-        transform.translate(pLocation.x - 21, pLocation.y - 21);
-        transform.rotate(angle + Math.PI / 2, 21, 21);
+        transform.translate(Convert.getCropX() + Convert.scale(pLocation.x - 21), Convert.scale(pLocation.y - 21));
+        transform.rotate(angle + Math.PI / 2, Convert.scale(21), Convert.scale(21));
         if (moving || jumping) {
             animate();
         }
-        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX * frameSize, currentSpriteY * frameSize, frameSize, frameSize), transform, this);
+        transform.scale(1.28,1.28);g2d.drawImage(imgPlayer.getSubimage(currentSpriteX * frameSize, currentSpriteY * frameSize, frameSize, frameSize), transform, this);
     }
 
     public void move(int gameSpeed) {

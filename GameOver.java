@@ -23,7 +23,8 @@ public class GameOver extends JPanel implements KeyListener {
 
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(imgBackground, 0, 0, null);
+        g.fillRect(0, 0, Convert.getScreenWidth(), Convert.getScreenHeight());
+        g.drawImage(imgBackground, Convert.getCropX(), 0,(int)(Convert.getScreenWidth()*Convert.getVirtualAspectRatio()),Convert.getScreenHeight(), null);
         g.setFont(new Font("Arial", 0, 90));
         g.setColor(Color.WHITE);
         if (Game.getWinner() != 0) {

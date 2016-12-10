@@ -150,12 +150,13 @@ public class Menu extends JPanel implements KeyListener {
 
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(imgBackground, 0, 0, null);
-        g.drawImage(menuPane, 215, 0, null);
+        g.fillRect(0, 0, Convert.getScreenWidth(), Convert.getScreenHeight());
+        g.drawImage(imgBackground, Convert.getCropX(), 0,(int)(Convert.getScreenWidth()*Convert.getVirtualAspectRatio()),Convert.getScreenHeight(), null);
+        g.drawImage(menuPane, Convert.getCropX() + Convert.scale(223) , 0,Convert.scale(354),Convert.scale(573), null);
         if (!levelSelect) {
-            g.drawImage(playImg, 260, 90, null);
-            g.drawImage(optImg, 260, 240, null);
-            g.drawImage(quitImg, 260, 390, null);
+            g.drawImage(playImg,Convert.getCropX() +Convert.scale(260), 90, Convert.scale(playImg.getWidth()),Convert.scale(playImg.getHeight()), null);
+            g.drawImage(optImg,Convert.getCropX() +Convert.scale(260), 240, Convert.scale(optImg.getWidth()),Convert.scale(optImg.getHeight()), null);
+            g.drawImage(quitImg,Convert.getCropX() +Convert.scale(260), 390, Convert.scale(quitImg.getWidth()),Convert.scale(quitImg.getHeight()), null);
         } else if (!gameSetup) {
             g.drawImage(LVLeclipseImg, 260, 90, null);
             g.drawImage(LVLcloseEncountersImg, 260, 240, null);
@@ -173,7 +174,7 @@ public class Menu extends JPanel implements KeyListener {
             for (int i = 0; i < gameSpeed; i++)
                 g.drawImage(roundsAmtImg, 260 + i * 44, 440, null);
         }
-        g.drawImage(playerSprites[currentSprite], 210, cursY, null);
+        g.drawImage(playerSprites[currentSprite],Convert.getCropX() +Convert.scale(210), cursY, Convert.scale(playerSprites[currentSprite].getWidth()),Convert.scale(playerSprites[currentSprite].getHeight()), null);
     }
 
     public void move() {

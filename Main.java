@@ -6,12 +6,12 @@ public class Main {
     static JFrame currentFrame;
 
     public static void main(String[] args) throws InterruptedException {
-        frame.setSize(800, 600);  // Window Size
-        // frame.setUndecorated(true);
+        Convert.setScale((float)1.28);//put aspect ratio here
+        frame.setUndecorated(true);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
-        // frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         runnit();
     }
 
