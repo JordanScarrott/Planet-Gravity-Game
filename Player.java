@@ -7,8 +7,6 @@ import java.awt.image.BufferedImage;
 
 public class Player extends JPanel implements KeyListener {
 
-    public static final int JUMP_VELOCITY = 1;
-
     private BufferedImage imgPlayer = null;
     private MyVector pLocation;
     private MyVector pVelocity;
@@ -36,71 +34,61 @@ public class Player extends JPanel implements KeyListener {
     public Player(MyVector location, int radius, BufferedImage imgPlayer, int[] keys) {
         this.pLocation = location;
         pVelocity = new MyVector();
-        this.center = new MyVector(location.x , location.y);
+        this.center = new MyVector(location.x, location.y);
         this.imgPlayer = imgPlayer;
         this.radius = radius;
         this.keys = keys;
         alive = true;
         this.wins = 0;
         angle = randomAngle();
-        this.pLocation.add((radius+21) * (float)Math.cos(angle), (radius+21) * (float)Math.sin(angle));
+        this.pLocation.add((radius + 21) * (float) Math.cos(angle), (radius + 21) * (float) Math.sin(angle));
         animationLand = false;
     }
-    public Player(Planet relPla, BufferedImage imgPlayer, int[] keys){
+
+    public Player(Planet relPla, BufferedImage imgPlayer, int[] keys) {
         this(relPla.getpLocation().copy()
-                , (int)relPla.getRadius() // <-- BUGSS!!!!
+                , (int) relPla.getRadius() // <-- BUGSS!!!!
                 , imgPlayer
                 , keys);
         this.relativePlanet = relPla;
         this.wins = 0;
 
     }
-    //Getters and Setters
-    public boolean getJumping() {
-        return jumping;
-    }
-    public boolean getAlive(){
-        return alive;
-    }
-    public float getRadVelocity(){
-        return radVelocity;
-    }
-    public void setAlive(boolean alive){
-        this.alive = alive;
-    }
-    //Functions
-    public void paint(Graphics g){
+
+    public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
-        transform.translate(pLocation.x-21, pLocation.y-21);
-        transform.rotate(angle + Math.PI/2, 21,21);
-        if(moving || jumping) {
+        transform.translate(pLocation.x - 21, pLocation.y - 21);
+        transform.rotate(angle + Math.PI / 2, 21, 21);
+        if (moving || jumping) {
             animate();
         }
-        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX*frameSize,currentSpriteY*frameSize, frameSize, frameSize), transform, this);
+        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX * frameSize, currentSpriteY * frameSize, frameSize, frameSize), transform, this);
     }
+
     public void move(int gameSpeed) {
         update(gameSpeed);
-        if(jumping){
+        if (jumping) {
             pVelocity = MyVector.sub(pLocation, relativePlanet.getpLocation()).normalize();
             pVelocity.mult(radVelocity);
             pLocation.add(pVelocity);
         }
     }
-    public void animate(){
+
+    public void animate() {
         long newTime = System.currentTimeMillis();
-        if (newTime-lastTime>=delay) {
+        if (newTime - lastTime >= delay) {
             lastTime = newTime;
             if (currentSpriteX < 3) {
                 currentSpriteX++;
-            }
-            else {
+            } else {
                 currentSpriteX = 0;
             }
         }
     }
-    public void update(int gameSpeed){
+
+    public void update(int gameSpeed) {
         applyForce(gameSpeed);
         clampRadLocation();
         clampRadVelocity();
@@ -114,50 +102,56 @@ public class Player extends JPanel implements KeyListener {
         // Reset radLocation for the next rotation
         radLocation = 0;
     }
-    public float computeRadianAngle(){
-        return (radLocation * (float)Math.PI * 2) / relativePlanet.getPerimeter();
+
+    public float computeRadianAngle() {
+        return (radLocation * (float) Math.PI * 2) / relativePlanet.getPerimeter();
     }
-    public void clampRadLocation(){
-        radLocation %= (relativePlanet.getPerimeter()*2*Math.PI);
+
+    public void clampRadLocation() {
+        radLocation %= (relativePlanet.getPerimeter() * 2 * Math.PI);
     }
-    public void clampRadVelocity(){
-        if(radVelocity > Planet.MAX_VELOCITY) radVelocity = Planet.MAX_VELOCITY;
+
+    public void clampRadVelocity() {
+        if (radVelocity > Planet.MAX_VELOCITY) radVelocity = Planet.MAX_VELOCITY;
     }
-    public void applyForce(int gameSpeed){
-        if(moving){
+
+    public void applyForce(int gameSpeed) {
+        if (moving) {
             //Apply Acceleration;
-            if(radVelocity < relativePlanet.getThisPlanetsMax()) {
-                radVelocity += radAcceleration* gameSpeed*0.25;
+            if (radVelocity < relativePlanet.getThisPlanetsMax()) {
+                radVelocity += radAcceleration * gameSpeed * 0.25;
                 radLocation += radVelocity;
-            }else{
-                if(radVelocity > 7){
-                    radVelocity -= 10 * radAcceleration * gameSpeed*0.25;
+            } else {
+                if (radVelocity > 7) {
+                    radVelocity -= 10 * radAcceleration * gameSpeed * 0.25;
                     radLocation += radVelocity;
-                }else{
-                    radVelocity -= 2 * radAcceleration * gameSpeed*0.25;
+                } else {
+                    radVelocity -= 2 * radAcceleration * gameSpeed * 0.25;
                     radLocation += radVelocity;
                 }
 
             }
         }
     }
-    public float randomAngle(){
-        return (float)(Math.random()*2*Math.PI);
+
+    public float randomAngle() {
+        return (float) (Math.random() * 2 * Math.PI);
     }
 
-    public boolean checkCollision(Planet planet){
+    public boolean checkCollision(Planet planet) {
         if (MyVector.distanceSq(pLocation, planet.getpLocation()) < (21 + planet.getRadius()) * (21 + planet.getRadius())) {
             land(planet);
             return true;
         }
         return false;
     }
-    public void land(Planet planet){
+
+    public void land(Planet planet) {
         //Calculate new angle
         this.relativePlanet = planet;
         this.center.set(relativePlanet.getpLocation());
-        angle = (float)Math.atan((pLocation.y - relativePlanet.getpLocation().y)/(pLocation.x - relativePlanet.getpLocation().x));
-        if(pLocation.x < relativePlanet.getpLocation().x)angle += Math.PI;
+        angle = (float) Math.atan((pLocation.y - relativePlanet.getpLocation().y) / (pLocation.x - relativePlanet.getpLocation().x));
+        if (pLocation.x < relativePlanet.getpLocation().x) angle += Math.PI;
         jumping = false;
         moving = true;
         currentSpriteX = 0;
@@ -165,13 +159,13 @@ public class Player extends JPanel implements KeyListener {
         animationLand = true;
         radAcceleration = relativePlanet.getPlanetaryAcceleration();
     }
-    public void spawn(Planet planet){
 
+    public void spawn(Planet planet) {
         this.pLocation = planet.getpLocation().copy();
         this.relativePlanet = planet;
         this.center.set(relativePlanet.getpLocation());
-        this.radius = (int)planet.getRadius();
-        this.pLocation.add((radius+21) * (float)Math.cos(angle), (radius+21) * (float)Math.sin(angle));
+        this.radius = (int) planet.getRadius();
+        this.pLocation.add((radius + 21) * (float) Math.cos(angle), (radius + 21) * (float) Math.sin(angle));
         moving = false;
         jumping = false;
         radLocation = 0;
@@ -179,22 +173,25 @@ public class Player extends JPanel implements KeyListener {
         currentSpriteX = 0;
         currentSpriteY = 0;
     }
+
     public void addKeyListener(JFrame frame) {
         frame.addKeyListener(this);
     }
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
+
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if(!jumping) {
+        if (!jumping) {
             if (keyCode == keys[0]) {
                 moving = true;
                 radAcceleration = relativePlanet.getPlanetaryAcceleration();
             }
         }
-        if(moving) {
+        if (moving) {
             if (keyCode == keys[1]) {
                 moving = false;
                 jumping = true;
@@ -203,8 +200,31 @@ public class Player extends JPanel implements KeyListener {
             }
         }
     }
+
     @Override
     public void keyReleased(KeyEvent e) {
+    }
+
+    public void win() {
+        this.wins++;
+    }
+
+
+    // Getters and Setters
+    public boolean getJumping() {
+        return jumping;
+    }
+
+    public boolean getAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
+    public float getRadVelocity() {
+        return radVelocity;
     }
 
     public MyVector getpLocation() {
@@ -217,14 +237,10 @@ public class Player extends JPanel implements KeyListener {
 
     public void setNewLocation() {
         angle = randomAngle();
-        this.pLocation.add((radius+21) * (float)Math.cos(angle), (radius+21) * (float)Math.sin(angle));
+        this.pLocation.add((radius + 21) * (float) Math.cos(angle), (radius + 21) * (float) Math.sin(angle));
     }
 
     public int getWins() {
         return this.wins;
-    }
-
-    public void win() {
-        this.wins++;
     }
 }
