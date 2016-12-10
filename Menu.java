@@ -18,7 +18,7 @@ public class Menu extends JPanel implements KeyListener{
     private BufferedImage playImg = ResourceLoader.loadImage("MenuScreen/playbutton.png");
     private BufferedImage optImg = ResourceLoader.loadImage("MenuScreen/optionsbutton.png");
     private BufferedImage quitImg = ResourceLoader.loadImage("MenuScreen/Exitbutton.png");
-    private BufferedImage playerAmtImg = ResourceLoader.loadImage("MenuScreen/playerAmount.png");
+    private BufferedImage playerAmtImg = ResourceLoader.loadImage("MenuScreen/8HamsterColours.png");
     private BufferedImage roundsAmtImg = ResourceLoader.loadImage("/Tumble1.png");
 
     private long currentTime;
