@@ -10,7 +10,6 @@ public class Player extends JPanel implements KeyListener {
     private BufferedImage imgPlayer = null;
     private MyVector pLocation;
     private MyVector pVelocity;
-    private MyVector center;
     private Planet relativePlanet;
 
     private float radLocation;
@@ -21,7 +20,6 @@ public class Player extends JPanel implements KeyListener {
     private int currentSpriteY;
     private long lastTime = 0;
     private double delay = 100;
-    private int radius;
     private float angle;
     private boolean moving = false;
     private boolean jumping = false;
@@ -31,28 +29,19 @@ public class Player extends JPanel implements KeyListener {
     private boolean animationLand;
     private boolean alive;
 
-    public Player(MyVector location, int radius, BufferedImage imgPlayer, int[] keys) {
-        this.pLocation = location;
+    public Player(Planet relPla, BufferedImage imgPlayer, int[] keys) {
+        this.pLocation = relPla.getpLocation().copy();
         pVelocity = new MyVector();
-        this.center = new MyVector(location.x, location.y);
         this.imgPlayer = imgPlayer;
-        this.radius = radius;
         this.keys = keys;
         alive = true;
         this.wins = 0;
         angle = randomAngle();
-        this.pLocation.add((radius + 21) * (float) Math.cos(angle), (radius + 21) * (float) Math.sin(angle));
+        this.pLocation.add((relPla.getRadius() + 21) * (float) Math.cos(angle), (relPla.getRadius() + 21) * (float) Math.sin(angle));
         animationLand = false;
-    }
 
-    public Player(Planet relPla, BufferedImage imgPlayer, int[] keys) {
-        this(relPla.getpLocation().copy()
-                , (int) relPla.getRadius() // <-- BUGSS!!!!
-                , imgPlayer
-                , keys);
         this.relativePlanet = relPla;
         this.wins = 0;
-
     }
 
     public void paint(Graphics g) {
@@ -93,9 +82,9 @@ public class Player extends JPanel implements KeyListener {
         clampRadLocation();
         clampRadVelocity();
 
-        MyVector temp = MyVector.sub(pLocation, center);
+        MyVector temp = MyVector.sub(pLocation, relativePlanet.getpLocation());
         temp.rotate(computeRadianAngle());
-        temp.add(center);
+        temp.add(relativePlanet.getpLocation());
         pLocation.set(temp.x, temp.y);
 
         angle += computeRadianAngle();
@@ -149,7 +138,6 @@ public class Player extends JPanel implements KeyListener {
     public void land(Planet planet) {
         //Calculate new angle
         this.relativePlanet = planet;
-        this.center.set(relativePlanet.getpLocation());
         angle = (float) Math.atan((pLocation.y - relativePlanet.getpLocation().y) / (pLocation.x - relativePlanet.getpLocation().x));
         if (pLocation.x < relativePlanet.getpLocation().x) angle += Math.PI;
         jumping = false;
@@ -163,9 +151,7 @@ public class Player extends JPanel implements KeyListener {
     public void spawn(Planet planet) {
         this.pLocation = planet.getpLocation().copy();
         this.relativePlanet = planet;
-        this.center.set(relativePlanet.getpLocation());
-        this.radius = (int) planet.getRadius();
-        this.pLocation.add((radius + 21) * (float) Math.cos(angle), (radius + 21) * (float) Math.sin(angle));
+        this.pLocation.add((relativePlanet.getRadius() + 21) * (float) Math.cos(angle), (relativePlanet.getRadius() + 21) * (float) Math.sin(angle));
         moving = false;
         jumping = false;
         radLocation = 0;
@@ -237,7 +223,7 @@ public class Player extends JPanel implements KeyListener {
 
     public void setNewLocation() {
         angle = randomAngle();
-        this.pLocation.add((radius + 21) * (float) Math.cos(angle), (radius + 21) * (float) Math.sin(angle));
+        this.pLocation.add((relativePlanet.getRadius() + 21) * (float) Math.cos(angle), (relativePlanet.getRadius() + 21) * (float) Math.sin(angle));
     }
 
     public int getWins() {
