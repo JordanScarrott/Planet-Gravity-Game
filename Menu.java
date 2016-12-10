@@ -10,14 +10,19 @@ public class Menu extends JPanel implements KeyListener{
     ArrayList<Planet> planets = new ArrayList<Planet>();
     private int playerAmount = 2;
     private int roundsAmount = 3;
+    private int gameSpeed = 2;
     private boolean finished;
     private int cursY = 110;
+    private int levelY = 110;
     private BufferedImage[] playerSprites = new BufferedImage[4];
     private BufferedImage imgBackground = ResourceLoader.loadImage("background.png");
     private BufferedImage menuPane = ResourceLoader.loadImage("MenuScreen/TExtMenuThing.png");
     private BufferedImage playImg = ResourceLoader.loadImage("MenuScreen/playbutton.png");
     private BufferedImage optImg = ResourceLoader.loadImage("MenuScreen/optionsbutton.png");
     private BufferedImage quitImg = ResourceLoader.loadImage("MenuScreen/Exitbutton.png");
+    private BufferedImage LVLeclipseImg = ResourceLoader.loadImage("MenuScreen/LvlEclipse.png");
+    private BufferedImage LVLcloseEncountersImg = ResourceLoader.loadImage("MenuScreen/LvlCloseEncounters.png");
+    private BufferedImage LVLasteroidBeltImg = ResourceLoader.loadImage("MenuScreen/LvlAsteroidBelt.png");
     private BufferedImage playerAmtImg = ResourceLoader.loadImage("MenuScreen/8HamsterColours.png");
     private BufferedImage roundsAmtImg = ResourceLoader.loadImage("/Tumble1.png");
 
@@ -34,6 +39,7 @@ public class Menu extends JPanel implements KeyListener{
 
     private final int MAX_PLAYERS = 8;
     private final int MAX_ROUNDS = 7;
+    private final int MAX_GAMESPEED = 4;
 
     private JFrame jframe;
 
@@ -91,6 +97,9 @@ public class Menu extends JPanel implements KeyListener{
                 }else if(cursY == 260){
                     if(roundsAmount < MAX_ROUNDS)roundsAmount++;
                 }
+                else if(cursY == 410){
+                    if(gameSpeed < MAX_GAMESPEED)gameSpeed++;
+                }
                 if (currentTime-lastTime>=delay) {
                     ResourceLoader.loadAudio("cursorMove.wav");
                     lastTime = currentTime;
@@ -103,6 +112,9 @@ public class Menu extends JPanel implements KeyListener{
                     if(playerAmount > 2)playerAmount--;
                 }else if(cursY == 260){
                     if(roundsAmount > 1)roundsAmount--;
+                }
+                else if(cursY == 410){
+                    if(gameSpeed> 1)gameSpeed--;
                 }
                 if (currentTime-lastTime>=delay) {
                     ResourceLoader.loadAudio("cursorMove.wav");
@@ -128,6 +140,7 @@ public class Menu extends JPanel implements KeyListener{
                     ResourceLoader.loadAudio("selectSound.wav");
                     lastTime = currentTime;
                 }
+                levelY = cursY;
                 gameSetup = true;
             }
             else{
@@ -135,7 +148,7 @@ public class Menu extends JPanel implements KeyListener{
                     ResourceLoader.loadAudio("selectSound.wav");
                     lastTime = currentTime;
                 }
-                planets = LevelCreator.generateLevel((cursY-110)/150);
+                planets = LevelCreator.generateLevel((levelY-110)/150);
                 finished = true;
             }
         }
@@ -151,6 +164,9 @@ public class Menu extends JPanel implements KeyListener{
     }
     public int getRounds(){
         return roundsAmount;
+    }
+    public int getGameSpeed(){
+        return gameSpeed;
     }
     public ArrayList<Planet> getPlanets(){
         return planets;
@@ -183,19 +199,21 @@ public class Menu extends JPanel implements KeyListener{
             g.drawImage(quitImg, 260, 390, null);
         }
         else if(!gameSetup){
-            g.drawImage(playImg, 260, 90, null);
-            g.drawImage(playImg, 260, 240, null);
-            g.drawImage(playImg, 260, 390, null);
+            g.drawImage(LVLeclipseImg, 260, 90, null);
+            g.drawImage(LVLcloseEncountersImg, 260, 240, null);
+            g.drawImage(LVLasteroidBeltImg, 260, 390, null);
         }else{
             g.setFont(new Font("Arial", 0, 20));
             g.setColor(Color.WHITE);
             g.drawString("Number of Players: ", 260, 90);
             g.drawString("Number of Rounds: ", 260, 240);
-            g.drawImage(playImg, 260, 390, null);
+            g.drawString("Game Speed: ", 260, 390);
             for(int i = 0; i < playerAmount; i++)
             g.drawImage(playerAmtImg.getSubimage(i*42,0, 42, 42), 260 + i*44, 140, null);
             for(int i = 0; i < roundsAmount; i++)
                 g.drawImage(roundsAmtImg, 260 + i * 44, 290, null);
+            for(int i = 0; i < gameSpeed; i++)
+                g.drawImage(roundsAmtImg, 260 + i * 44, 440, null);
     }
         g.drawImage(playerSprites[currentSprite], 210, cursY, null);
     }

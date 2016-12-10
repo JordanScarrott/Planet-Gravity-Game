@@ -9,16 +9,18 @@ public class Game extends JPanel implements KeyListener {
     private BufferedImage imgBackground;
     private static int rounds;
     private static int maxRounds;
+    public static int gameSpeed;
     private static int winner;
     ArrayList<Planet> planets = new ArrayList<Planet>();
     ArrayList<Player> players = new ArrayList<Player>();
     private int[] planetID = new int[8]; //Indicates on which planet the respective player is on
-    private int[][] keys = new int[4][2]; //Keyboard inputs for player 1
+    private int[][] keys = new int[8][2]; //Keyboard inputs for player 1
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
-    public Game(JFrame frame, ArrayList<Planet> planets, int rounds, int playersAmount) {
+    public Game(JFrame frame, ArrayList<Planet> planets, int rounds, int playersAmount, int gameSpeed) {
         frame.addKeyListener(this);
         this.rounds = rounds;
+        this.gameSpeed = gameSpeed;
         maxRounds = rounds;
         this.planets = planets;
         imgBackground = ResourceLoader.loadImage("background.png");
@@ -47,9 +49,10 @@ public class Game extends JPanel implements KeyListener {
     }
 
     public void move() {
+        System.out.println("p1: " + players.get(0).getRadVelocity() + "  p2: " + players.get(1).getRadVelocity());
         for(int i = 0; i < players.size(); i++) {
             if (players.get(i).getAlive()) {
-                players.get(i).move();
+                players.get(i).move(gameSpeed);
                 if (players.get(i).getJumping()) {
                     if(checkPlayerInsideGrid(i))killPlayer(i);
                     for (int j = 0; j < planets.size(); j++) {
@@ -151,6 +154,18 @@ public class Game extends JPanel implements KeyListener {
         //Player 4
         keys[3][0] = KeyEvent.VK_N; //Move
         keys[3][1] = KeyEvent.VK_M; //Jump
+        //Player 5
+        keys[4][0] = KeyEvent.VK_N; //Move
+        keys[4][1] = KeyEvent.VK_M; //Jump
+        //Player 6
+        keys[5][0] = KeyEvent.VK_N; //Move
+        keys[5][1] = KeyEvent.VK_M; //Jump
+        //Player 7
+        keys[6][0] = KeyEvent.VK_N; //Move
+        keys[6][1] = KeyEvent.VK_M; //Jump
+        //Player 8
+        keys[7][0] = KeyEvent.VK_N; //Move
+        keys[7][1] = KeyEvent.VK_M; //Jump
     }
     public void Winner(int playerID){
         players.get(playerID).win();

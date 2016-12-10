@@ -6,7 +6,7 @@ public class Main {
     static JFrame currentFrame;
 
     public static void main(String[] args) throws InterruptedException {
-        frame.setSize(800, 600);  // Window Size
+        frame.setSize(810, 635);  // Window Size
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -22,7 +22,7 @@ public class Main {
         while(true) {
             menu = new Menu(frame);
             Menu(frame, menu);
-            game = new Game(frame, menu.getPlanets(), menu.getRounds(), menu.getPlayerAmount());
+            game = new Game(frame, menu.getPlanets(), menu.getRounds(), menu.getPlayerAmount(), menu.getGameSpeed());
             Game(frame, game);
             gameOver = new GameOver(frame);
             GameOver(frame, gameOver);

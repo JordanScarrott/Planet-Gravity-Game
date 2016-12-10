@@ -80,11 +80,11 @@ public class Player extends JPanel implements KeyListener {
         }
         g2d.drawImage(imgPlayer.getSubimage(currentSpriteX*frameSize,currentSpriteY*frameSize, frameSize, frameSize), transform, this);
     }
-    public void move() {
-        update();
+    public void move(int gameSpeed) {
+        update(gameSpeed);
         if(jumping){
             pVelocity = MyVector.sub(pLocation, relativePlanet.getpLocation()).normalize();
-            pVelocity.mult(JUMP_VELOCITY);
+            pVelocity.mult(radVelocity);
             pLocation.add(pVelocity);
         }
     }
@@ -100,8 +100,8 @@ public class Player extends JPanel implements KeyListener {
             }
         }
     }
-    public void update(){
-        applyForce();
+    public void update(int gameSpeed){
+        applyForce(gameSpeed);
         clampRadLocation();
         clampRadVelocity();
 
@@ -123,11 +123,16 @@ public class Player extends JPanel implements KeyListener {
     public void clampRadVelocity(){
         if(radVelocity > Planet.MAX_VELOCITY) radVelocity = Planet.MAX_VELOCITY;
     }
-    public void applyForce(){
+    public void applyForce(int gameSpeed){
         if(moving){
             //Apply Acceleration;
-            radVelocity += radAcceleration;
-            radLocation += radVelocity;
+            if(radVelocity < relativePlanet.getThisPlanetsMax()) {
+                radVelocity += radAcceleration* gameSpeed*0.25;
+                radLocation += radVelocity;
+            }else{
+                radVelocity -= 2 * radAcceleration * gameSpeed*0.25;
+                radLocation += radVelocity;
+            }
         }
     }
     public float randomAngle(){
