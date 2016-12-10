@@ -63,7 +63,7 @@ public class PlanetGenerator {
                 // Determine possible location
                 tempLocation = MyVector.randomMyVector();
                 // Scale the random vector
-                tempLocation.respectiveMult(interval.x, interval.y);
+                tempLocation.scale(interval.x, interval.y);
                 // Shift to correct range
                 tempLocation.add(minLocation);
 
@@ -90,7 +90,7 @@ public class PlanetGenerator {
         int playerBoundary = 2 * PLAYER_SIZE;
         for (Planet p : planets) {
 //            if distSq between planet and proposed planet < (sum of radii)^2
-            tempDistSq = MyVector.distanceSq(location, p.getCenter());
+            tempDistSq = MyVector.distanceSq(location, p.getpLocation());
             tempSumRadii = (p.getRadius() + radius + playerBoundary) * (p.getRadius() + radius + playerBoundary);
             if (tempDistSq < tempSumRadii) {
                 return true;
