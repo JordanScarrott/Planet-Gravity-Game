@@ -145,9 +145,8 @@ public class Player extends JPanel implements KeyListener {
         //Calculate new angle
         this.relativePlanet = planet;
         this.center.set(relativePlanet.getpLocation());
-        radLocation = 0;
-        radVelocity = 0;
         angle = (float)Math.atan((pLocation.y - relativePlanet.getpLocation().y)/(pLocation.x - relativePlanet.getpLocation().x));
+        if(pLocation.x < relativePlanet.getpLocation().x)angle += Math.PI;
         jumping = false;
         moving = true;
         currentSpriteX = 0;
