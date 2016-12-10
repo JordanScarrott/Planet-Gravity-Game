@@ -25,7 +25,9 @@ public class Planet extends JPanel {
         perimeter = 2 * (float)Math.PI * this.radius;
         this.spriteGlowX = spriteGlowX;
         this.spriteGlowY = spriteGlowY;
-        planetaryAcceleration = MAX_ACCELERATION * (1 - (this.radius / (250 + 10)));
+        // Check out the map method in the Convert class for more info
+        planetaryAcceleration = Convert.map(radius, 110, 40, 0, MAX_ACCELERATION);
+//         planetaryAcceleration = MAX_ACCELERATION * (1 - (this.radius / (250 + 10)));
     }
     public Planet(float x, float y, float radius, int spriteGlowX, int spriteGlowY, BufferedImage imgPlanet) {
         this(new MyVector(x, y), radius, spriteGlowX, spriteGlowY, imgPlanet);
