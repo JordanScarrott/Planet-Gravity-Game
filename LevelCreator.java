@@ -9,22 +9,22 @@ public abstract class LevelCreator {
     public static  ArrayList<Planet> generateLevel(int level){
         ArrayList<Planet> planets = new ArrayList<Planet>();
         if(level == 0) {
-            planets.add(new Planet(80, 360, 41, 9, 6, ResourceLoader.loadImage("planets/redplanet.png")));
-            planets.add(new Planet(100, 100, 40, 11, 6, ResourceLoader.loadImage("planets/asteroid.png")));
-            planets.add(new Planet(100, 620, 40, 11, 6, ResourceLoader.loadImage("planets/asteroid.png")));
-            planets.add(new Planet(280, 360, 50, 8, 6, ResourceLoader.loadImage("planets/purpleplanet.png")));
-            planets.add(new Planet(250, 510, 50, 8, 6, ResourceLoader.loadImage("planets/purpleplanet.png")));
-            planets.add(new Planet(250, 210, 50, 8, 6, ResourceLoader.loadImage("planets/purpleplanet.png")));
-            planets.add(new Planet(460, 460, 75, 7, 6, ResourceLoader.loadImage("planets/greenplanet.png")));
-            planets.add(new Planet(460, 260, 75, 7, 6, ResourceLoader.loadImage("planets/greenplanet.png")));
-            planets.add(new Planet(780, 360, 100, 10, 10, ResourceLoader.loadImage("planets/orangeplanet.png")));
-            planets.add(new Planet(1100, 150, 100, 10, 10, ResourceLoader.loadImage("planets/orangeplanet.png")));
-            planets.add(new Planet(1100, 570, 100, 10, 10, ResourceLoader.loadImage("planets/orangeplanet.png")));
-            planets.add(new Planet(860, 130, 75, 7, 6, ResourceLoader.loadImage("planets/greenplanet.png")));
-            planets.add(new Planet(860, 590, 75, 7, 6, ResourceLoader.loadImage("planets/greenplanet.png")));
-            planets.add(new Planet(680, 165, 50, 8, 6, ResourceLoader.loadImage("planets/purpleplanet.png")));
-            planets.add(new Planet(680, 555, 50, 8, 6, ResourceLoader.loadImage("planets/purpleplanet.png")));
-            planets.add(new Planet(1100, 360, 50, 8, 6, ResourceLoader.loadImage("planets/purpleplanet.png")));
+            planets.add(new Planet(80, 360, 41, 9, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/redPlanet.png"), Convert.scale(100),Convert.scale(92))));
+            planets.add(new Planet(100, 100, 40, 11, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/asteroid.png"), Convert.scale(104),Convert.scale(96))));
+            planets.add(new Planet(100, 620, 40, 11, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/asteroid.png"), Convert.scale(104),Convert.scale(96))));
+            planets.add(new Planet(280, 360, 50, 8, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/purplePlanet.png"), Convert.scale(116),Convert.scale(113))));
+            planets.add(new Planet(250, 510, 50, 8, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/purplePlanet.png"), Convert.scale(116),Convert.scale(113))));
+            planets.add(new Planet(250, 210, 50, 8, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/purplePlanet.png"), Convert.scale(116),Convert.scale(113))));
+            planets.add(new Planet(460, 460, 75, 7, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/greenPlanet.png"), Convert.scale(168),Convert.scale(163))));
+            planets.add(new Planet(460, 260, 75, 7, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/greenPlanet.png"), Convert.scale(168),Convert.scale(163))));
+            planets.add(new Planet(780, 360, 100, 10, 10, Convert.scaleImage(ResourceLoader.loadImage("planets/orangePlanet.png"), Convert.scale(221),Convert.scale(220))));
+            planets.add(new Planet(1100, 150, 100, 10, 10, Convert.scaleImage(ResourceLoader.loadImage("planets/orangePlanet.png"), Convert.scale(221),Convert.scale(220))));
+            planets.add(new Planet(1100, 570, 100, 10, 10, Convert.scaleImage(ResourceLoader.loadImage("planets/orangePlanet.png"), Convert.scale(221),Convert.scale(220))));
+            planets.add(new Planet(860, 130, 75, 7, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/greenPlanet.png"), Convert.scale(168),Convert.scale(163))));
+            planets.add(new Planet(860, 590, 75, 7, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/greenPlanet.png"), Convert.scale(168),Convert.scale(163))));
+            planets.add(new Planet(680, 165, 50, 8, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/purplePlanet.png"), Convert.scale(116),Convert.scale(113))));
+            planets.add(new Planet(680, 555, 50, 8, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/purplePlanet.png"), Convert.scale(116),Convert.scale(113))));
+            planets.add(new Planet(1100, 360, 50, 8, 6, Convert.scaleImage(ResourceLoader.loadImage("planets/purplePlanet.png"), Convert.scale(116),Convert.scale(113))));
 
         }else if(level == 1){
             planets.add(new Planet(150, 150, 100, 10, 10, ResourceLoader.loadImage("planets/orangeplanet.png")));

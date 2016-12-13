@@ -15,6 +15,7 @@ public class Player extends JPanel implements KeyListener {
     private float radLocation;
     private float radVelocity;
     private float radAcceleration;
+    private float jumpVelocity;
 
     private int currentSpriteX;
     private int currentSpriteY;
@@ -48,19 +49,24 @@ public class Player extends JPanel implements KeyListener {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform transform = new AffineTransform();
-        transform.translate(pLocation.x - 21, pLocation.y - 21);
-        transform.rotate(angle + Math.PI / 2, 21, 21);
+        transform.translate(Convert.getCropX() + Convert.scale(pLocation.x - 21), Convert.scale(pLocation.y - 21));
+        transform.rotate(angle + Math.PI / 2, Convert.scale(21), Convert.scale(21));
         if (moving || jumping) {
             animate();
         }
-        g2d.drawImage(imgPlayer.getSubimage(currentSpriteX * frameSize, currentSpriteY * frameSize, frameSize, frameSize), transform, this);
+        g2d.drawImage(imgPlayer.getSubimage(Convert.scale(currentSpriteX * frameSize), Convert.scale(currentSpriteY * frameSize), Convert.scale(frameSize), Convert.scale(frameSize)), transform, this);
     }
 
     public void move(int gameSpeed) {
         update(gameSpeed);
         if (jumping) {
+            if(radVelocity < 0.5){
+                jumpVelocity = (float)0.5;
+            }else{
+                jumpVelocity = radVelocity;
+            }
             pVelocity = MyVector.sub(pLocation, relativePlanet.getpLocation()).normalize();
-            pVelocity.mult(radVelocity);
+            pVelocity.mult(jumpVelocity);
             pLocation.add(pVelocity);
         }
     }

@@ -31,6 +31,7 @@ public class Planet extends JPanel {
         if (radius == 75) thisPlanetsMax = 4;
         if (radius == 50) thisPlanetsMax = 7;
         if (radius == 41) thisPlanetsMax = 30;
+        if (radius == 40) thisPlanetsMax = 8;
     }
 
     public Planet(float x, float y, float radius, int spriteGlowX, int spriteGlowY, BufferedImage imgPlanet) {
@@ -39,9 +40,8 @@ public class Planet extends JPanel {
 
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(imgPlanet, (int) pLocation.x - (int) radius - spriteGlowX, (int) pLocation.y - (int) radius - spriteGlowY, null);
+        g.drawImage(imgPlanet, Convert.getCropX() + Convert.scale((int) pLocation.x - (int) radius - spriteGlowX), Convert.scale((int) pLocation.y - (int) radius - spriteGlowY),null);
     }
-
 
     // Getters and Setters
     public MyVector getpLocation() {

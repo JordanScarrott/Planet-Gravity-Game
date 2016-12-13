@@ -14,7 +14,7 @@ public class Game extends JPanel implements KeyListener {
     ArrayList<Player> players = new ArrayList<Player>();
     private BufferedImage imgBackground;
     private int[] planetID = new int[8]; //Indicates on which planet the respective player is on
-    private int[][] keys = new int[8][2]; //Keyboard inputs for player 1
+    private int[][] keys = new int[8][2]; //Keyboard inputs for players
     private int playerbounds = 20; //Used for player collision
     private boolean finished;
 
@@ -24,7 +24,7 @@ public class Game extends JPanel implements KeyListener {
         this.gameSpeed = gameSpeed;
         maxRounds = rounds;
         this.planets = planets;
-        imgBackground = ResourceLoader.loadImage("background.png");
+        imgBackground = Convert.scaleImage(ResourceLoader.loadImage("background.png"));
         finished = false;
         addPlayers(frame, playersAmount);
     }
@@ -39,7 +39,9 @@ public class Game extends JPanel implements KeyListener {
 
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(imgBackground, 0, 0, null);
+        g.fillRect(0, 0, Convert.getScreenWidth(), Convert.getScreenHeight());
+        g.drawImage(imgBackground, Convert.getCropX(), 0, null);
+
         for (Planet i : planets) {
             i.paint(g);
         }
@@ -49,11 +51,11 @@ public class Game extends JPanel implements KeyListener {
         //GUI
         g.setFont(new Font("Arial", 0, 20));
         g.setColor(Color.WHITE);
-        g.drawString("Round " + (maxRounds - rounds + 1) + "/" + maxRounds, 680, 40);
+        g.drawString("Round " + (maxRounds - rounds + 1) + "/" + maxRounds, Convert.scale(1200), Convert.scale(40));
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getAlive()) g.setColor(Color.WHITE);
             else g.setColor(Color.GRAY);
-            g.drawString("P" + (i + 1) + ": " + players.get(i).getWins(), 10 + 100 * i, 550);
+            g.drawString("P" + (i + 1) + ": " + players.get(i).getWins(), 10 + 100 * i, Convert.scale(740));
         }
         //
     }
@@ -98,9 +100,9 @@ public class Game extends JPanel implements KeyListener {
 
     public boolean checkPlayerInsideGrid(int i) {
         if (players.get(i).getpLocation().x + 21 < 0
-                || players.get(i).getpLocation().x - 21 > 1280
+                || players.get(i).getpLocation().x - 21 > Convert.getScreenWidth()
                 || players.get(i).getpLocation().y + 21 < 0
-                || players.get(i).getpLocation().y + 21 > 720) return true;
+                || players.get(i).getpLocation().y + 21 > Convert.getScreenWidth()) return true;
         else return false;
     }
 
@@ -139,7 +141,7 @@ public class Game extends JPanel implements KeyListener {
     public void addPlayers(JFrame frame, int playersAmount) {
         for (int i = 0; i < playersAmount; i++) {
             randomSpawn(i);
-            players.add(new Player(planets.get(planetID[i]), ResourceLoader.loadImage("animate2.png"), keys[i]));
+            players.add(new Player(planets.get(planetID[i]), Convert.scaleImage(ResourceLoader.loadImage("animate2.png"), Convert.scale(500),Convert.scale(500)), keys[i]));
             players.get(i).addKeyListener(frame);
         }
         setPlayerKeys();
