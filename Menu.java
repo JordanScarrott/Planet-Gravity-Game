@@ -18,16 +18,16 @@ public class Menu extends JPanel implements KeyListener {
     private int cursY = 110;
     private int levelY = 110;
     private BufferedImage[] playerSprites = new BufferedImage[4];
-    private BufferedImage imgBackground = ResourceLoader.loadImage("background.png");
-    private BufferedImage menuPane = ResourceLoader.loadImage("MenuScreen/TExtMenuThing.png");
-    private BufferedImage playImg = ResourceLoader.loadImage("MenuScreen/playbutton.png");
-    private BufferedImage optImg = ResourceLoader.loadImage("MenuScreen/optionsbutton.png");
-    private BufferedImage quitImg = ResourceLoader.loadImage("MenuScreen/Exitbutton.png");
-    private BufferedImage LVLeclipseImg = ResourceLoader.loadImage("MenuScreen/LvlEclipse.png");
-    private BufferedImage LVLcloseEncountersImg = ResourceLoader.loadImage("MenuScreen/LvlCloseEncounters.png");
-    private BufferedImage LVLasteroidBeltImg = ResourceLoader.loadImage("MenuScreen/LvlAsteroidBelt.png");
-    private BufferedImage playerAmtImg = ResourceLoader.loadImage("MenuScreen/8HamsterColours.png");
-    private BufferedImage roundsAmtImg = ResourceLoader.loadImage("/Tumble1.png");
+    private BufferedImage imgBackground = Convert.scaleImage(ResourceLoader.loadImage("background.png"));
+    private BufferedImage menuPane = Convert.scaleImage(ResourceLoader.loadImage("MenuScreen/TExtMenuThing.png"), Convert.scale(354),Convert.scale(573));
+    private BufferedImage playImg = Convert.scaleImage(ResourceLoader.loadImage("MenuScreen/playbutton.png"), Convert.scale(261),Convert.scale(92));
+    private BufferedImage optImg = Convert.scaleImage(ResourceLoader.loadImage("MenuScreen/optionsbutton.png"), Convert.scale(261),Convert.scale(92));
+    private BufferedImage quitImg = Convert.scaleImage(ResourceLoader.loadImage("MenuScreen/Exitbutton.png"), Convert.scale(261),Convert.scale(92));
+    private BufferedImage LVLeclipseImg = Convert.scaleImage(ResourceLoader.loadImage("MenuScreen/LvlEclipse.png"), Convert.scale(249),Convert.scale(80));
+    private BufferedImage LVLcloseEncountersImg = Convert.scaleImage(ResourceLoader.loadImage("MenuScreen/LvlCloseEncounters.png"), Convert.scale(249),Convert.scale(80));
+    private BufferedImage LVLasteroidBeltImg = Convert.scaleImage(ResourceLoader.loadImage("MenuScreen/LvlAsteroidBelt.png"), Convert.scale(249),Convert.scale(80));
+    private BufferedImage playerAmtImg = Convert.scaleImage(ResourceLoader.loadImage("MenuScreen/8HamsterColours.png"), Convert.scale(336),Convert.scale(42));
+    private BufferedImage roundsAmtImg = Convert.scaleImage(ResourceLoader.loadImage("/Tumble1.png"), Convert.scale(42),Convert.scale(42));
     private long currentTime;
     private long lastTime = 0;
     private double delay = 100;
@@ -45,7 +45,7 @@ public class Menu extends JPanel implements KeyListener {
         gameSetup = false;
         finished = false;
         for (int i = 1; i < 4; i++) {
-            playerSprites[i - 1] = ResourceLoader.loadImage("Hamster" + i + ".png");
+            playerSprites[i - 1] = Convert.scaleImage(ResourceLoader.loadImage("Hamster" + i + ".png"), Convert.scale(42),Convert.scale(42));
         }
     }
 
@@ -147,20 +147,20 @@ public class Menu extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
     }
-
     public void paint(Graphics g) {
         super.paint(g);
+        Graphics2D g2d = (Graphics2D) g;
         g.fillRect(0, 0, Convert.getScreenWidth(), Convert.getScreenHeight());
-        g.drawImage(imgBackground, Convert.getCropX(), 0,(int)(Convert.getScreenWidth()*Convert.getVirtualAspectRatio()),Convert.getScreenHeight(), null);
-        g.drawImage(menuPane, Convert.getCropX() + Convert.scale(223) , 0,Convert.scale(354),Convert.scale(573), null);
+        g2d.drawImage(imgBackground, Convert.getCropX(), 0, null);
+        g2d.drawImage(menuPane, Convert.getCropX() + Convert.scale(223) , 0, null);
         if (!levelSelect) {
-            g.drawImage(playImg,Convert.getCropX() +Convert.scale(260), 90, Convert.scale(playImg.getWidth()),Convert.scale(playImg.getHeight()), null);
-            g.drawImage(optImg,Convert.getCropX() +Convert.scale(260), 240, Convert.scale(optImg.getWidth()),Convert.scale(optImg.getHeight()), null);
-            g.drawImage(quitImg,Convert.getCropX() +Convert.scale(260), 390, Convert.scale(quitImg.getWidth()),Convert.scale(quitImg.getHeight()), null);
+            g2d.drawImage(playImg,Convert.getCropX() +Convert.scale(260), 90, null);
+            g2d.drawImage(optImg,Convert.getCropX() +Convert.scale(260), 240, null);
+            g2d.drawImage(quitImg,Convert.getCropX() +Convert.scale(260), 390, null);
         } else if (!gameSetup) {
-            g.drawImage(LVLeclipseImg, 260, 90, null);
-            g.drawImage(LVLcloseEncountersImg, 260, 240, null);
-            g.drawImage(LVLasteroidBeltImg, 260, 390, null);
+            g2d.drawImage(LVLeclipseImg, Convert.getCropX() +Convert.scale(260), 90,null);
+            g2d.drawImage(LVLcloseEncountersImg, Convert.getCropX() +Convert.scale(260), 240,null);
+            g2d.drawImage(LVLasteroidBeltImg, Convert.getCropX() +Convert.scale(260), 390,null);
         } else {
             g.setFont(new Font("Arial", 0, 20));
             g.setColor(Color.WHITE);
@@ -168,13 +168,14 @@ public class Menu extends JPanel implements KeyListener {
             g.drawString("Number of Rounds: ", 260, 240);
             g.drawString("Game Speed: ", 260, 390);
             for (int i = 0; i < playerAmount; i++)
-                g.drawImage(playerAmtImg.getSubimage(i * 42, 0, 42, 42), 260 + i * 44, 140, null);
+                g.drawImage(playerAmtImg.getSubimage( 42*i, 0, 42, 42), 260 + i * 44, 140, null);
             for (int i = 0; i < roundsAmount; i++)
                 g.drawImage(roundsAmtImg, 260 + i * 44, 290, null);
             for (int i = 0; i < gameSpeed; i++)
                 g.drawImage(roundsAmtImg, 260 + i * 44, 440, null);
         }
-        g.drawImage(playerSprites[currentSprite],Convert.getCropX() +Convert.scale(210), cursY, Convert.scale(playerSprites[currentSprite].getWidth()),Convert.scale(playerSprites[currentSprite].getHeight()), null);
+
+        g2d.drawImage(playerSprites[currentSprite],Convert.getCropX() +Convert.scale(210), cursY, null);
     }
 
     public void move() {

@@ -9,8 +9,7 @@ import java.awt.image.BufferedImage;
  */
 public class GameOver extends JPanel implements KeyListener {
 
-    private BufferedImage imgBackground = ResourceLoader.loadImage("background.png");
-
+    private BufferedImage imgBackground = Convert.scaleImage(ResourceLoader.loadImage("background.png"));
     private boolean finished;
     private JFrame jframe;
 
@@ -24,7 +23,7 @@ public class GameOver extends JPanel implements KeyListener {
     public void paint(Graphics g) {
         super.paint(g);
         g.fillRect(0, 0, Convert.getScreenWidth(), Convert.getScreenHeight());
-        g.drawImage(imgBackground, Convert.getCropX(), 0,(int)(Convert.getScreenWidth()*Convert.getVirtualAspectRatio()),Convert.getScreenHeight(), null);
+        g.drawImage(imgBackground, Convert.getCropX(), 0, null);
         g.setFont(new Font("Arial", 0, 90));
         g.setColor(Color.WHITE);
         if (Game.getWinner() != 0) {

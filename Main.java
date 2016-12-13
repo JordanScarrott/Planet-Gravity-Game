@@ -6,7 +6,7 @@ public class Main {
     static JFrame currentFrame;
 
     public static void main(String[] args) throws InterruptedException {
-        Convert.setScale((float)1.28);//put aspect ratio here
+        Convert.setScale((float)1);//put aspect ratio here
         frame.setUndecorated(true);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

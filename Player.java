@@ -15,6 +15,7 @@ public class Player extends JPanel implements KeyListener {
     private float radLocation;
     private float radVelocity;
     private float radAcceleration;
+    private float jumpVelocity;
 
     private int currentSpriteX;
     private int currentSpriteY;
@@ -43,24 +44,51 @@ public class Player extends JPanel implements KeyListener {
         this.relativePlanet = relPla;
         this.wins = 0;
     }
-
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2d = (Graphics2D) g;
-        AffineTransform transform = new AffineTransform();
-        transform.translate(Convert.getCropX() + Convert.scale(pLocation.x - 21), Convert.scale(pLocation.y - 21));
-        transform.rotate(angle + Math.PI / 2, Convert.scale(21), Convert.scale(21));
+        //Player
+        AffineTransform playerTransform = Convert.transform(Convert.getCropX() + Convert.scale(pLocation.x - 21), Convert.scale(pLocation.y - 21), (float)(angle + Math.PI / 2), Convert.scale(21), Convert.scale(21), new AffineTransform());
         if (moving || jumping) {
             animate();
         }
-        transform.scale(1.28,1.28);g2d.drawImage(imgPlayer.getSubimage(currentSpriteX * frameSize, currentSpriteY * frameSize, frameSize, frameSize), transform, this);
+        //Blue Fire
+        AffineTransform tempSpeedTransform = Convert.transform(Convert.getCropX() + Convert.scale(pLocation.x - 21), Convert.scale(pLocation.y - 21),(float)(angle + Math.PI / 2), Convert.scale(21), Convert.scale(21), new AffineTransform());
+        AffineTransform speedTransform;
+        if(radVelocity < 10) {
+            if(jumping)speedTransform = Convert.transform(-42, 60 - (120 - 100*(radVelocity*0.1)),(float)(-Math.PI/2),Convert.scale(62), Convert.scale(21),radVelocity*0.1, 1, tempSpeedTransform);
+            else speedTransform = Convert.transform(-100 +(120 - 100*(radVelocity*0.1)) , 1,radVelocity*0.1, 1, tempSpeedTransform);
+            g2d.drawImage(imgPlayer.getSubimage(Convert.scale(currentSpriteX * 125), Convert.scale(332), Convert.scale(125), Convert.scale(frameSize)),speedTransform, this);
+        }else {//Creates Limit on its size
+            speedTransform = Convert.transform(-100 +(120 - 100) , 1, tempSpeedTransform);
+            g2d.drawImage(imgPlayer.getSubimage(Convert.scale(currentSpriteX * 125), Convert.scale(332), Convert.scale(125), Convert.scale(frameSize)),speedTransform, this);
+        }
+       //Red Fire
+//            if(radVelocity > 10) {
+//                if (jumping) {
+//                    transform2.translate(-40, 35);
+//                } else {
+//                    transform2.translate(-80, -30);
+//                    transform2.rotate(Math.PI / 2, Convert.scale(52), Convert.scale(40));
+//                }
+//               // g2d.drawImage(imgPlayer.getSubimage(Convert.scale(currentSpriteX * 105), Convert.scale(216), Convert.scale(105), Convert.scale(80)), transform2, this);
+//
+//        }
+        //
+        g2d.drawImage(imgPlayer.getSubimage(Convert.scale(currentSpriteX * frameSize), Convert.scale(currentSpriteY * frameSize), Convert.scale(frameSize), Convert.scale(frameSize)), playerTransform, this);
+
     }
 
     public void move(int gameSpeed) {
         update(gameSpeed);
         if (jumping) {
+            if(radVelocity < 0.5){
+                jumpVelocity = (float)0.5;
+            }else{
+                jumpVelocity = radVelocity;
+            }
             pVelocity = MyVector.sub(pLocation, relativePlanet.getpLocation()).normalize();
-            pVelocity.mult(radVelocity);
+            pVelocity.mult(jumpVelocity);
             pLocation.add(pVelocity);
         }
     }
