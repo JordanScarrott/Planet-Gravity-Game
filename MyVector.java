@@ -1,4 +1,3 @@
-import com.sun.javafx.geom.Vec2f;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -6,17 +5,19 @@ import static java.lang.Math.sin;
  * A 2-dimensional, single-precision, floating-point vector with operator methods
  *
  * @author Jordan Scarrott
- * @see Vec2f
  */
-public class MyVector extends Vec2f {
+public class MyVector {
+
+    float x, y;
 
     // Constructors
     public MyVector() {
-        super(0, 0);
+        this(0, 0);
     }
 
-    public MyVector(float vx, float vy) {
-        super(vx, vy);
+    public MyVector(float x, float y) {
+        this.x = x;
+        this.y = y;
     }
 
     /**
@@ -34,34 +35,34 @@ public class MyVector extends Vec2f {
     }
 
     /**
-     * Returns a copy of the specified <code>core.MyVector</code> as a new <code>core.MyVector</code>
+     * Returns a copy of the specified <code>MyVector</code> as a new <code>MyVector</code>
      *
-     * @param v the <code>core.MyVector</code> to be copied
-     * @return a copy of the specified <code>core.MyVector</code> as a new <code>core.MyVector</code>
+     * @param v the <code>MyVector</code> to be copied
+     * @return a copy of the specified <code>MyVector</code> as a new <code>MyVector</code>
      */
     public static MyVector copy(MyVector v) {
         return new MyVector(v.x, v.y);
     }
 
     /**
-     * Returns the product of a specified <code>core.MyVector</code> and a specified scalar number
-     * as a <code>core.MyVector</code>
+     * Returns the product of a specified <code>MyVector</code> and a specified scalar number
+     * as a <code>MyVector</code>
      *
-     * @param v the <code>core.MyVector</code> to be multiplied
+     * @param v the <code>MyVector</code> to be multiplied
      * @param m the scalar to be multiplied with the components of the specified
-     *          <code>core.MyVector</code>
-     * @return a new <code>core.MyVector</code> that is the product of the specified
-     * <code>core.MyVector</code> and the specified scalar
+     *          <code>MyVector</code>
+     * @return a new <code>MyVector</code> that is the product of the specified
+     * <code>MyVector</code> and the specified scalar
      */
     public static MyVector mult(MyVector v, float m) {
         return new MyVector(v.x *= m, v.y *= m);
     }
 
     /**
-     * Computes the magnitude squared of the specified core.MyVector
+     * Computes the magnitude squared of the specified MyVector
      *
-     * @return the square magnitude of the specified core.MyVector
-     * @throws NullPointerException if the specified {@code core.MyVector} is null
+     * @return the square magnitude of the specified MyVector
+     * @throws NullPointerException if the specified {@code MyVector} is null
      */
     public static float magSq(MyVector myVector) {
         return myVector.x * myVector.x + myVector.y * myVector.y;
@@ -70,8 +71,8 @@ public class MyVector extends Vec2f {
     /**
      * Computes dot (scalar) product of two Vectors
      *
-     * @param v1 the first core.MyVector
-     * @param v2 the second core.MyVector
+     * @param v1 the first MyVector
+     * @param v2 the second MyVector
      * @return the dot product of the two vectors
      * @throws NullPointerException if the specified {@code vector} is null
      */
@@ -82,8 +83,8 @@ public class MyVector extends Vec2f {
     /**
      * Computes the angle (in degrees) between two Vectors
      *
-     * @param v1 the first core.MyVector
-     * @param v2 the second core.MyVector
+     * @param v1 the first MyVector
+     * @param v2 the second MyVector
      * @return the angle between the two vectors measured in degrees
      */
     public static float angle(MyVector v1, MyVector v2) {
@@ -103,12 +104,17 @@ public class MyVector extends Vec2f {
     /**
      * Returns the square of the distance between two points.
      *
-     * @param mv1 the first core.MyVector
-     * @param mv2 the second core.MyVector
-     * @return the square of the distance between the two MyVectors
+     * @param x1 the X coordinate of the first specified point
+     * @param y1 the Y coordinate of the first specified point
+     * @param x2 the X coordinate of the second specified point
+     * @param y2 the Y coordinate of the second specified point
+     * @return the square of the distance between the two
+     * sets of specified coordinates.
      */
-    public static float distanceSq(MyVector mv1, MyVector mv2) {
-        return distanceSq(mv1.x, mv1.y, mv2.x, mv2.y);
+    public static float distanceSq(float x1, float y1, float x2, float y2) {
+        x1 -= x2;
+        y1 -= y2;
+        return (x1 * x1 + y1 * y1);
     }
 
     /**
@@ -132,28 +138,52 @@ public class MyVector extends Vec2f {
     }
 
     /**
-     * Sets the components, x and y, of this <code>core.MyVector</code>
+     * Returns myVector rotated by an angle of radAngle radians
+     *
+     * @param myVector the MyVector to rotate
+     * @param radAngle angle in radians
+     * @return a rotated MyVector
      */
-    public void set(MyVector v) {
-        set(v.x, v.y);
+    public static MyVector rotate(MyVector myVector, float radAngle) {
+        double sine = sin(radAngle);
+        double cosine = cos(radAngle);
+
+        return new MyVector((float)(myVector.x * cosine - myVector.y * sine)
+                , (float)(myVector.x * sine + myVector.y * cosine));
     }
 
     /**
-     * Returns a copy of this <code>core.MyVector</code> as a <b>new</b> <code>core.MyVector</code>
+     * Sets the components, x and y, of this <code>MyVector</code>
+     */
+    public void set(MyVector v) {
+        this.x = v.x;
+        this.y = v.y;
+    }
+
+    /**
+     * Sets the components, x and y, of this <code>MyVector</code>
+     */
+    public void set(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * Returns a copy of this <code>MyVector</code> as a <b>new</b> <code>MyVector</code>
      *
-     * @return a copy of this <code>core.MyVector</code> as a <b>new</b> <code>core.MyVector</code>
+     * @return a copy of this <code>MyVector</code> as a <b>new</b> <code>MyVector</code>
      */
     public MyVector copy() {
         return copy(this);
     }
 
     /**
-     * Adds the components of the specified <code>core.MyVector</code> to
-     * this <code>core.MyVector</code> and them returns this <code>core.MyVector</code>
+     * Adds the components of the specified <code>MyVector</code> to
+     * this <code>MyVector</code> and them returns this <code>MyVector</code>
      *
-     * @param vx the X component to be added to this <code>core.MyVector</code>
-     * @param vy the Y component to be added to this <code>core.MyVector</code>
-     * @return this <code>core.MyVector</code> after the addition
+     * @param vx the X component to be added to this <code>MyVector</code>
+     * @param vy the Y component to be added to this <code>MyVector</code>
+     * @return this <code>MyVector</code> after the addition
      */
     public MyVector add(float vx, float vy) {
         this.x += vx;
@@ -162,23 +192,23 @@ public class MyVector extends Vec2f {
     }
 
     /**
-     * Adds the components of the specified <code>core.MyVector</code> to
-     * this <code>core.MyVector</code> and them returns this <code>core.MyVector</code>
+     * Adds the components of the specified <code>MyVector</code> to
+     * this <code>MyVector</code> and them returns this <code>MyVector</code>
      *
-     * @param v the <code>core.MyVector</code> to be added to this <code>core.MyVector</code>
-     * @return this <code>core.MyVector</code> after the addition
+     * @param v the <code>MyVector</code> to be added to this <code>MyVector</code>
+     * @return this <code>MyVector</code> after the addition
      */
     public MyVector add(MyVector v) {
         return this.add(v.x, v.y);
     }
 
     /**
-     * Subtracts the components of the specified <code>core.MyVector</code> from
-     * this <code>core.MyVector</code> and them returns this <code>core.MyVector</code>
+     * Subtracts the components of the specified <code>MyVector</code> from
+     * this <code>MyVector</code> and them returns this <code>MyVector</code>
      *
-     * @param vx the X component to be subtracted from this <code>core.MyVector</code>
-     * @param vy the Y component to be subtracted from this <code>core.MyVector</code>
-     * @return this <code>core.MyVector</code> after the subtraction
+     * @param vx the X component to be subtracted from this <code>MyVector</code>
+     * @param vy the Y component to be subtracted from this <code>MyVector</code>
+     * @return this <code>MyVector</code> after the subtraction
      */
     public MyVector sub(float vx, float vy) {
         this.x -= vx;
@@ -187,22 +217,22 @@ public class MyVector extends Vec2f {
     }
 
     /**
-     * Subtracts the components of the specified <code>core.MyVector</code> from
-     * this <code>core.MyVector</code> and them returns this <code>core.MyVector</code>
+     * Subtracts the components of the specified <code>MyVector</code> from
+     * this <code>MyVector</code> and them returns this <code>MyVector</code>
      *
-     * @param v the <code>core.MyVector</code> to be subtracted from this <code>core.MyVector</code>
-     * @return this <code>core.MyVector</code> after the subtraction
+     * @param v the <code>MyVector</code> to be subtracted from this <code>MyVector</code>
+     * @return this <code>MyVector</code> after the subtraction
      */
     public MyVector sub(MyVector v) {
         return this.sub(v.x, v.y);
     }
 
     /**
-     * Multiplies this <code>core.MyVector</code> by the specified scalar, m
+     * Multiplies this <code>MyVector</code> by the specified scalar, m
      *
-     * @param m the scalar number by which this <code>core.MyVector</code>
+     * @param m the scalar number by which this <code>MyVector</code>
      *          will be multiplied
-     * @return this <code>core.MyVector</code> after the mulitplication
+     * @return this <code>MyVector</code> after the mulitplication
      */
     public MyVector mult(float m) {
         this.x *= m;
@@ -211,25 +241,25 @@ public class MyVector extends Vec2f {
     }
 
     /**
-     * Returns the quotient of the specified <code>core.MyVector</code> and the
-     * specified scalar number as a <b>new</b> <code>core.MyVector</code>
+     * Returns the quotient of the specified <code>MyVector</code> and the
+     * specified scalar number as a <b>new</b> <code>MyVector</code>
      *
-     * @param v the <code>core.MyVector</code> to be divided
+     * @param v the <code>MyVector</code> to be divided
      * @param m the scalar by which the specified <code>MyVectors</code> components
      *          will be divided
-     * @return a new <code>core.MyVector</code> that is the quotient of the specified
-     * <code>core.MyVector</code> and the specified scalar
+     * @return a new <code>MyVector</code> that is the quotient of the specified
+     * <code>MyVector</code> and the specified scalar
      */
     public MyVector div(MyVector v, float m) {
         return new MyVector(this.x / m, this.y / m);
     }
 
     /**
-     * Divides this <code>core.MyVector</code> by the specified scalar, m
+     * Divides this <code>MyVector</code> by the specified scalar, m
      *
-     * @param m the scalar number by which this <code>core.MyVector</code>
+     * @param m the scalar number by which this <code>MyVector</code>
      *          will be divided
-     * @return this <code>core.MyVector</code> after the division
+     * @return this <code>MyVector</code> after the division
      */
     public MyVector div(float m) {
         this.x /= m;
@@ -239,9 +269,9 @@ public class MyVector extends Vec2f {
 
     /**
      * Returns the angle between the positive Cartesian X axis and the
-     * core.MyVector represented by this instance
+     * MyVector represented by this instance
      *
-     * @return the bearing of the core.MyVector represented by this instance
+     * @return the bearing of the MyVector represented by this instance
      */
     public float bearing() {
         return angle(1, 0);
@@ -262,7 +292,7 @@ public class MyVector extends Vec2f {
      * Returns a vector with the same direction and magnitude equal to 1.
      * If this is a zero vector, a zero vector is returned.
      *
-     * @return the normalized {@code core.MyVector}
+     * @return the normalized {@code MyVector}
      */
     public MyVector normalize() {
         final float mag = magnitude();
@@ -299,18 +329,6 @@ public class MyVector extends Vec2f {
     }
 
     /**
-     * Computes cross product of the myVector represented by this instance
-     * and the specified myVector.
-     *
-     * @param myVector the other myVector
-     * @return the cross product of the two vectors
-     * @throws NullPointerException if the specified {@code myVector} is null
-     */
-    public final float cross(MyVector myVector) {
-        return this.x * myVector.y - this.y * myVector.x;
-    }
-
-    /**
      * Returns a random MyVector
      * @param lowerBound the lowest x or y value that can be returned
      * @param upperBound the highest x or y value that can be returned
@@ -326,8 +344,45 @@ public class MyVector extends Vec2f {
     }*/
 
     /**
-     * Computes the angle (in degrees) between this core.MyVector and
-     * the specified core.MyVector.
+     * Computes cross product of the myVector represented by this instance
+     * and the specified myVector.
+     *
+     * @param myVector the other myVector
+     * @return the cross product of the two vectors
+     * @throws NullPointerException if the specified {@code myVector} is null
+     */
+    public final float cross(MyVector myVector) {
+        return this.x * myVector.y - this.y * myVector.x;
+    }
+    
+        /**
+     * Returns a random MyVector
+     * @return a random MyVector of with components ranging from 0 to 1
+     * */
+    public static MyVector randomMyVector() {
+        Random rand = new Random();
+
+        // Choose random floats between 0 and 1
+        return new MyVector(rand.nextFloat(), rand.nextFloat());
+    }
+    
+   /**
+    * Scales the MyVector represented by this instance
+    * Multiplies the x and y components of the MyVector represented by
+    * this instance by the specified x and y variables
+    * @param x the nuymber by which to multiply the x component of MyVector
+    *   represented by this instance
+    * @param y the nuymber by which to multiply the y component of MyVector
+    *   represented by this instance
+    */
+    public void scale(float x, float y) {
+        this.x *= x;
+        this.y *= y;
+    }
+
+    /**
+     * Computes the angle (in degrees) between this MyVector and
+     * the specified MyVector.
      *
      * @param vx the X magnitude of the other vector
      * @param vy the Y magnitude of the other vector
@@ -338,8 +393,8 @@ public class MyVector extends Vec2f {
     }
 
     /**
-     * Computes the angle (in degrees) between this core.MyVector and the
-     * specified core.MyVector
+     * Computes the angle (in degrees) between this MyVector and the
+     * specified MyVector
      *
      * @param myVector the other myVector
      * @return the angle between the two vectors measured in degrees,
@@ -362,20 +417,10 @@ public class MyVector extends Vec2f {
     }
 
     /**
-     * Returns myVector rotated by an angle of radAngle radians
-     * @param myVector the MyVector to rotate
-     * @param radAngle angle in radians
-     * @return a rotated MyVector
-     * */
-    public static MyVector rotate(MyVector myVector, float radAngle) {
-        return new MyVector(myVector.x * (float)cos(radAngle) - myVector.y * (float)sin(radAngle)
-                , myVector.x * (float)sin(radAngle) + myVector.y * (float)cos(radAngle));
-    }
-
-    /**
      * Rotate the MyVector represented by this instance
+     *
      * @param radAngle angle in radians
-     * */
+     */
     public void rotate(float radAngle) {
         this.set(rotate(this, radAngle));
     }
