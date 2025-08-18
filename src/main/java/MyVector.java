@@ -286,6 +286,18 @@ public class MyVector {
     }
 
     /**
+     * Returns the square of the distance between two points.
+     *
+     * @param v1 the first specified point
+     * @param v2 the second specified point
+     * @return the square of the distance between the two
+     * sets of specified coordinates.
+     */
+    public static float distanceSq(MyVector v1, MyVector v2) {
+        return distanceSq(v1.x, v1.y, v2.x, v2.y);
+    }
+
+    /**
      * Computes the angle (in degrees) between two Vectors
      *
      * @param v1 the first MyVector
