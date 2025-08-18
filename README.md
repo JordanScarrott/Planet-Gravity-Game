@@ -34,3 +34,23 @@ The game is playable, but the source code is undergoing a major refactoring effo
     ```
 
 This will launch the game in a fullscreen window, starting with the main menu.
+
+## Building and Running with Gradle
+
+This project now uses the Gradle build system. You can use the Gradle wrapper (`gradlew`) to build and run the application.
+
+### Build the project
+
+To compile the source code and build the project, run the following command in your terminal:
+
+```bash
+./gradlew build
+```
+
+### Run the application
+
+To run the application, use the following command:
+
+```bash
+./gradlew run
+```
