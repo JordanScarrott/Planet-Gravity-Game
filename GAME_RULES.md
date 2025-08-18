@@ -47,3 +47,27 @@ A player is eliminated from the round if any of the following occurs:
 
 - The last player remaining alive at the end of a round wins that round.
 - The player with the most rounds won at the end of the game is the overall winner.
+
+## Controls
+
+The game supports multiple players, each with their own set of controls for movement and jumping.
+
+- **Player 1:**
+  - **Move:** `A`
+  - **Jump:** `S`
+
+- **Player 2:**
+  - **Move:** `O`
+  - **Jump:** `P`
+
+- **Player 3:**
+  - **Move:** `C`
+  - **Jump:** `V`
+
+- **Player 4:**
+  - **Move:** `N`
+  - **Jump:** `M`
+
+- **Player 5-8:**
+  - **Move:** `N`
+  - **Jump:** `M`
